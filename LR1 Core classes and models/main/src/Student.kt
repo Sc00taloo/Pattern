@@ -1,7 +1,7 @@
 package main.src
 
-class Student(val id: Int, var lastName: String, var firstName: String, var middleName: String? = null, var phone: String? = null, var telegram: String? = null, var email: String? = null, var git: String? = null){
-    fun getId(): Int = id
+class Student(private val id: Int, private var lastName: String, private var firstName: String, private var middleName: String, private var phone: String? = null, private var telegram: String? = null, private var email: String? = null, private var git: String? = null){
+    fun getID(): Int = id
 
     fun getLastName(): String = lastName
     fun setLastName(value: String) {
@@ -13,8 +13,8 @@ class Student(val id: Int, var lastName: String, var firstName: String, var midd
         firstName = value
     }
 
-    fun getMiddleName(): String? = middleName
-    fun setMiddleName(value: String?) {
+    fun getMiddleName(): String = middleName
+    fun setMiddleName(value: String) {
         middleName = value
     }
 
@@ -39,6 +39,10 @@ class Student(val id: Int, var lastName: String, var firstName: String, var midd
     }
 
     fun getFullName(): String {
-        return "$lastName $firstName ${middleName ?: ""}".trim()
+        return "$lastName $firstName $middleName".trim()
+    }
+
+    override fun toString(): String {
+        return "Student(id=$id, fullName='${getFullName()}', phone=$phone, telegram=$telegram, email=$email, git=$git)"
     }
 }
