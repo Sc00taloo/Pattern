@@ -19,18 +19,7 @@ class Student(var id: Int, var lastName: String, var firstName: String, var midd
     }
 
     constructor(_id: Int, _lastName: String, _firstName: String, _middleName: String, _phone: String, _telegram: String, _email: String, _git: String) : this(_id, _firstName, _lastName, _middleName) {
-        if (!isValidPhone(_phone) || _phone == "") {
-            throw IllegalArgumentException("Неправильный формат номера телефона")
-        }
-        if (!isValidTelegram(_telegram) || _telegram == ""){
-            throw IllegalArgumentException("Неверный формат телеграма")
-        }
-        if (!isValidEmail(_email) || _email == ""){
-            throw IllegalArgumentException("Неверный формат почты")
-        }
-        if (!isValidGit(_git) || _git == ""){
-            throw IllegalArgumentException("Неверный формат гита")
-        }
+        validate(_phone, _telegram, _email, _git)
         this.phone = _phone
         this.telegram = _telegram
         this.email = _email
@@ -38,35 +27,20 @@ class Student(var id: Int, var lastName: String, var firstName: String, var midd
     }
 
     constructor(_id: Int, _lastName: String, _firstName: String, _middleName: String, _phone: String, _telegram: String, _email: String) : this(_id, _firstName, _lastName, _middleName) {
-        if (!isValidPhone(_phone) || _phone == "") {
-            throw IllegalArgumentException("Неправильный формат номера телефона")
-        }
-        if (!isValidTelegram(_telegram) || _telegram == ""){
-            throw IllegalArgumentException("Неверный формат телеграма")
-        }
-        if (!isValidEmail(_email) || _email == ""){
-            throw IllegalArgumentException("Неверный формат почты")
-        }
+        validate(_phone, _telegram,_email)
         this.phone = _phone
         this.telegram = _telegram
         this.email = _email
     }
 
     constructor(_id: Int, _lastName: String, _firstName: String, _middleName: String, _phone: String, _telegram: String) : this(_id, _firstName, _lastName, _middleName) {
-        if (!isValidPhone(_phone) || _phone == "") {
-            throw IllegalArgumentException("Неправильный формат номера телефона")
-        }
-        if (!isValidTelegram(_telegram) || _telegram == ""){
-            throw IllegalArgumentException("Неверный формат телеграма")
-        }
+        validate(_phone, _telegram)
         this.phone = _phone
         this.telegram = _telegram
     }
 
     constructor(_id: Int, _lastName: String, _firstName: String, _middleName: String, _phone: String) : this(_id, _firstName, _lastName, _middleName) {
-        if (!isValidPhone(_phone) || _phone == "") {
-            throw IllegalArgumentException("Неправильный формат номера телефона")
-        }
+        validate(_phone)
         this.phone = _phone
     }
 
@@ -76,6 +50,14 @@ class Student(var id: Int, var lastName: String, var firstName: String, var midd
 
     override fun toString(): String {
         return "Student(id=$id, fullName='${getFullName()}', phone=$phone, telegram=$telegram, email=$email, git=$git)"
+    }
+
+    private fun validate(vararg contacts: String) {
+        if (contacts.any { isValidGit(it) || (isValidPhone(it) || isValidTelegram(it) || isValidEmail(it)) }) {
+            //pass
+        } else {
+            throw IllegalArgumentException("Неверный формат контакта или гит")
+        }
     }
 
     companion object {
