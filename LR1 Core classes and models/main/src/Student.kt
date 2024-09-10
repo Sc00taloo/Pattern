@@ -1,6 +1,33 @@
 package main.src
 
-class Student(val id: Int, var lastName: String, var firstName: String, var middleName: String, var phone: String? = null, var telegram: String? = null, var email: String? = null, var git: String? = null){
+class Student(var id: Int, var lastName: String, var firstName: String, var middleName: String){
+    var phone: String = ""
+    var telegram: String = ""
+    var email: String = ""
+    var git: String = ""
+
+    constructor(_id: Int, _lastName: String, _firstName: String, _middleName: String, _phone: String, _telegram: String, _email: String, _git: String) : this(_id, _firstName, _lastName, _middleName) {
+        this.phone = _phone
+        this.telegram = _telegram
+        this.email = _email
+        this.git = _git
+    }
+
+    constructor(_id: Int, _lastName: String, _firstName: String, _middleName: String, _phone: String, _telegram: String, _email: String) : this(_id, _firstName, _lastName, _middleName) {
+        this.phone = _phone
+        this.telegram = _telegram
+        this.email = _email
+    }
+
+    constructor(_id: Int, _lastName: String, _firstName: String, _middleName: String, _phone: String, _telegram: String) : this(_id, _firstName, _lastName, _middleName) {
+        this.phone = _phone
+        this.telegram = _telegram
+    }
+
+    constructor(_id: Int, _lastName: String, _firstName: String, _middleName: String, _phone: String) : this(_id, _firstName, _lastName, _middleName) {
+        this.phone = _phone
+    }
+
     fun getFullName(): String {
         return "$lastName $firstName $middleName".trim()
     }

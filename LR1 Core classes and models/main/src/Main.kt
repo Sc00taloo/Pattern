@@ -1,23 +1,15 @@
 import main.src.Student
 
 fun main() {
-    val student1 = Student(
-        id = 1,
-        lastName = "Попов",
-        firstName = "Иван",
-        middleName = "Викторович",
-        phone = "+78005553535",
-        telegram = "@sc00taloo",
-        email = "vanya_popov12@list.ru",
-        git = "https://github.com/Sc00taloo"
+    val student1 = Student(1, "Попов", "Иван", "Викторович",
+        "+78005553535",
+        "@sc00taloo",
+        "vanya_popov12@list.ru",
+        "https://github.com/Sc00taloo"
     )
 
-    val student2 = Student(
-        id = 2,
-        lastName = "Николай",
-        firstName = "Палыч",
-        middleName = "Победоносный",
-        phone = "+79214441221"
+    val student2 = Student(2, "Николай", "Палыч", "Победоносный",
+        _phone = "+79214441221"
     )
 
     val student3 = Student(
@@ -25,25 +17,25 @@ fun main() {
         lastName = "Денисова",
         firstName = "Анастасия",
         middleName = "Давидовна",
-        email = "davidovna2024@gmail.com"
     )
 
     val student4 = Student(
-        id = 4,
-        lastName = "Пономарёв",
-        firstName = "Максим",
-        middleName = "Фёдорович",
-        email = "pomafyo123@mail.ru",
-        git = "https://github.com/MAXimus"
+        _id = 4,
+        _lastName = "Пономарёв",
+        _firstName = "Максим",
+        _middleName = "Фёдорович",
+        _phone = "+79451239009",
+        _telegram = "@pomafyo123",
+        _email = "pomafyo123@mail.ru",
     )
 
     val student5 = Student(
-        id = 5,
-        lastName = "Моисеева",
-        firstName = "Арина",
-        middleName = "Арсентьева",
-        phone = "+79451239009",
-        email = "moise11@gmail.com",
+        _id = 5,
+        _lastName = "Моисеева",
+        _firstName = "Арина",
+        _middleName = "Арсентьева",
+        _phone = "+79451239009",
+        _telegram = "@moise11",
     )
 
     println(student1)
