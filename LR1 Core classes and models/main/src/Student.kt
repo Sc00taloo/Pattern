@@ -6,9 +6,30 @@ class Student(var id: Int, var lastName: String, var firstName: String, var midd
     var email: String = ""
     var git: String = ""
 
+    init{
+        if(!isValidLastName(lastName) || lastName == ""){
+            throw IllegalArgumentException("Неправильный формат фамилия")
+        }
+        if(!isValidFirstName(firstName) || firstName == ""){
+            throw IllegalArgumentException("Неправильный формат имя")
+        }
+        if(!isValidMiddleName(middleName) || middleName == ""){
+            throw IllegalArgumentException("Неправильный формат отчества")
+        }
+    }
+
     constructor(_id: Int, _lastName: String, _firstName: String, _middleName: String, _phone: String, _telegram: String, _email: String, _git: String) : this(_id, _firstName, _lastName, _middleName) {
         if (!isValidPhone(_phone) || _phone == "") {
             throw IllegalArgumentException("Неправильный формат номера телефона")
+        }
+        if (!isValidTelegram(_telegram) || _telegram == ""){
+            throw IllegalArgumentException("Неверный формат телеграма")
+        }
+        if (!isValidEmail(_email) || _email == ""){
+            throw IllegalArgumentException("Неверный формат почты")
+        }
+        if (!isValidGit(_git) || _git == ""){
+            throw IllegalArgumentException("Неверный формат гита")
         }
         this.phone = _phone
         this.telegram = _telegram
@@ -20,6 +41,12 @@ class Student(var id: Int, var lastName: String, var firstName: String, var midd
         if (!isValidPhone(_phone) || _phone == "") {
             throw IllegalArgumentException("Неправильный формат номера телефона")
         }
+        if (!isValidTelegram(_telegram) || _telegram == ""){
+            throw IllegalArgumentException("Неверный формат телеграма")
+        }
+        if (!isValidEmail(_email) || _email == ""){
+            throw IllegalArgumentException("Неверный формат почты")
+        }
         this.phone = _phone
         this.telegram = _telegram
         this.email = _email
@@ -28,6 +55,9 @@ class Student(var id: Int, var lastName: String, var firstName: String, var midd
     constructor(_id: Int, _lastName: String, _firstName: String, _middleName: String, _phone: String, _telegram: String) : this(_id, _firstName, _lastName, _middleName) {
         if (!isValidPhone(_phone) || _phone == "") {
             throw IllegalArgumentException("Неправильный формат номера телефона")
+        }
+        if (!isValidTelegram(_telegram) || _telegram == ""){
+            throw IllegalArgumentException("Неверный формат телеграма")
         }
         this.phone = _phone
         this.telegram = _telegram
@@ -51,6 +81,24 @@ class Student(var id: Int, var lastName: String, var firstName: String, var midd
     companion object {
         fun isValidPhone(phone: String): Boolean {
             return phone.matches(Regex("^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$"))
+        }
+        fun isValidTelegram(telegram: String): Boolean {
+            return telegram.matches(Regex("^@[0-9a-zA-Z]{3,}$"))
+        }
+        fun isValidEmail(email: String): Boolean {
+            return email.matches(Regex("^([a-zA-Z0-9_-]{3,}@[a-zA-Z]+\\.[a-zA-Z]+)$"))
+        }
+        fun isValidGit(git: String): Boolean {
+            return git.matches(Regex("^https://github\\.com/[a-zA-Z0-9_-]+/?\$"))
+        }
+        fun isValidFirstName(firstName: String): Boolean {
+            return firstName.matches(Regex("^[А-ЯA-ZЁ]{1}[а-яa-zё]{2,}$"))
+        }
+        fun isValidLastName(lastName: String): Boolean {
+            return lastName.matches(Regex("^[А-ЯA-ZЁ]{1}[а-яa-zё]{2,}$"))
+        }
+        fun isValidMiddleName(middleName: String): Boolean {
+            return middleName.matches(Regex("^[А-ЯA-ZЁ]{1}[а-яa-zё]{2,}$"))
         }
     }
 }
