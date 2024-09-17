@@ -70,17 +70,16 @@ data class Student(
     }
 
     companion object {
-        fun studentCreate(
-            id: Int,
-            lastName: String,
-            firstName: String,
-            middleName: String,
-            phone: String? = null,
-            telegram: String? = null,
-            email: String? = null,
-            git: String? = null
-        ): Student?
-        { if (validateFIO(lastName, firstName, middleName) &&
+        fun createStudent(params: Map<String, Any?>): Student? {
+            val id = params["id"] as? Int ?: return null
+            val lastName = params["lastName"] as? String ?: return null
+            val firstName = params["firstName"] as? String ?: return null
+            val middleName = params["middleName"] as? String ?: return null
+            val phone = params["phone"] as? String
+            val telegram = params["telegram"] as? String
+            val email = params["email"] as? String
+            val git = params["git"] as? String
+            if (validateFIO(lastName, firstName, middleName) &&
                 (phone == null || isValidPhone(phone)) &&
                 (telegram == null || isValidTelegram(telegram)) &&
                 (email == null || isValidEmail(email)) &&
