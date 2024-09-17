@@ -1,11 +1,15 @@
 package main.src
 
-class Student(var id: Int, var lastName: String, var firstName: String, var middleName: String){
-    var phone: String = ""
-    var telegram: String = ""
-    var email: String = ""
-    var git: String = ""
-
+data class Student(
+    var id: Int,
+    var lastName: String,
+    var firstName: String,
+    var middleName: String,
+    var phone: String? = null,
+    var telegram: String? = null,
+    var email: String? = null,
+    var git: String? = null)
+{
     init{
         if(!isValidLastName(lastName) || lastName == ""){
             throw IllegalArgumentException("Неправильный формат фамилия")
@@ -18,30 +22,35 @@ class Student(var id: Int, var lastName: String, var firstName: String, var midd
         }
     }
 
-    constructor(_id: Int, _lastName: String, _firstName: String, _middleName: String, _phone: String, _telegram: String, _email: String, _git: String) : this(_id, _firstName, _lastName, _middleName) {
-        validate(_phone, _telegram, _email, _git)
-        this.phone = _phone
-        this.telegram = _telegram
-        this.email = _email
-        this.git = _git
-    }
-
-    constructor(_id: Int, _lastName: String, _firstName: String, _middleName: String, _phone: String, _telegram: String, _email: String) : this(_id, _firstName, _lastName, _middleName) {
-        validate(_phone, _telegram,_email)
-        this.phone = _phone
-        this.telegram = _telegram
-        this.email = _email
-    }
-
-    constructor(_id: Int, _lastName: String, _firstName: String, _middleName: String, _phone: String, _telegram: String) : this(_id, _firstName, _lastName, _middleName) {
-        validate(_phone, _telegram)
-        this.phone = _phone
-        this.telegram = _telegram
-    }
-
-    constructor(_id: Int, _lastName: String, _firstName: String, _middleName: String, _phone: String) : this(_id, _firstName, _lastName, _middleName) {
-        validate(_phone)
-        this.phone = _phone
+    fun set_contacts(phone: String? = null, telegram: String? = null, email: String? = null, git: String? = null) {
+        if (phone != null) {
+            if (isValidPhone(phone)) {
+                this.phone = phone
+            } else {
+                throw IllegalArgumentException("Неправильный формат номера телефона")
+            }
+        }
+        if (telegram != null) {
+            if (isValidTelegram(telegram)) {
+                this.telegram = telegram
+            } else {
+                throw IllegalArgumentException("Неверный формат телеграма")
+            }
+        }
+        if (email != null) {
+            if (isValidEmail(email)) {
+                this.email = email
+            } else {
+                throw IllegalArgumentException("Неверный формат почты")
+            }
+        }
+        if (git != null) {
+            if (isValidGit(git)) {
+                this.git = git
+            } else {
+                throw IllegalArgumentException("Неверный формат гита")
+            }
+        }
     }
 
     fun getFullName(): String {
@@ -61,6 +70,32 @@ class Student(var id: Int, var lastName: String, var firstName: String, var midd
     }
 
     companion object {
+        fun studentCreate(
+            id: Int,
+            lastName: String,
+            firstName: String,
+            middleName: String,
+            phone: String? = null,
+            telegram: String? = null,
+            email: String? = null,
+            git: String? = null
+        ): Student?
+        { if (validateFIO(lastName, firstName, middleName) &&
+                (phone == null || isValidPhone(phone)) &&
+                (telegram == null || isValidTelegram(telegram)) &&
+                (email == null || isValidEmail(email)) &&
+                (git == null || isValidGit(git))
+            ) {
+                return Student(id, lastName, firstName, middleName, phone, telegram, email, git)
+            } else {
+                println("Студент не создался")
+                return null
+            }
+        }
+        private fun validateFIO(lastName: String, firstName: String, middleName: String): Boolean {
+            return isValidLastName(lastName) && isValidFirstName(firstName) && isValidMiddleName(middleName)
+        }
+
         fun isValidPhone(phone: String): Boolean {
             return phone.matches(Regex("^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$"))
         }

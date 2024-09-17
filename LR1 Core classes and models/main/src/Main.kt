@@ -1,42 +1,38 @@
 import main.src.Student
 
 fun main() {
-    val student1 = Student(1, "Попов", "Иван", "Викторович",
-        "+78005553535",
-        "@sc00taloo",
-        "vanya_popov12@list.ru",
-        "https://github.com/Sc00taloo"
-    )
+    val student1 = Student.studentCreate(1, "Попов", "Иван", "Викторович",phone = "+78005553535", email = "vanya_popov12@list.ru")
 
-    val student2 = Student(2, "Николай", "Палыч", "Победоносный",
-        _phone = "+79214441221"
-    )
+    val student2 = Student(2, "Николай", "Палыч", "Победоносный", phone = "+79214441221")
+    //student2.set_contacts(phone = "+79214441221")
 
-    val student3 = Student(
+
+    val student3 = Student.studentCreate(
         id = 3,
         lastName = "Денисова",
         firstName = "Анастасия",
         middleName = "Давидовна",
     )
 
-    val student4 = Student(
-        _id = 4,
-        _lastName = "Пономарёв",
-        _firstName = "Максим",
-        _middleName = "Фёдорович",
-        _phone = "+79451239009",
-        _telegram = "@pomafyo123",
-        _email = "pomafyo123@mail.ru",
-    )
+    val student4 = Student.studentCreate(
+        id = 4,
+        lastName = "Пономарёв",
+        firstName = "Максим",
+        middleName = "Фёдорович",
+        phone = "+79451239009",
+        telegram = "@pomafyo123",
+        email = "pomafyo123@mail.ru")
+    //student4.set_contacts(phone = "+79451239009", telegram = "@pomafyo123", email = "pomafyo123@mail.ru")
 
-    val student5 = Student(
-        _id = 5,
-        _lastName = "Моисеева",
-        _firstName = "Арина",
-        _middleName = "Арсентьева",
-        _phone = "+79451239009",
-        _telegram = "@moise11",
-    )
+
+    val student5 = Student.studentCreate(
+        id = 5,
+        lastName = "Моисеева",
+        firstName = "Арина",
+        middleName = "Арсентьева",
+        phone = "+79451239009",
+        telegram = "@moise11")
+    //student5.set_contacts(phone = "+79451239009", telegram = "@moise11")
 
     println(student1)
     println(student2)
