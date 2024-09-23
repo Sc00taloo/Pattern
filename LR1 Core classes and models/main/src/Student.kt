@@ -20,6 +20,10 @@ data class Student(
         if(!isValidMiddleName(middleName) || middleName == ""){
             throw IllegalArgumentException("Неправильный формат отчества")
         }
+        // Проверка номера телефон
+        if (!Examination.isValidPhone(phone!!) || phone == "") {
+            throw IllegalArgumentException("Неправильный формат номера телефона")
+        }
     }
 
     fun set_contacts(phone: String? = null, telegram: String? = null, email: String? = null, git: String? = null) {
@@ -69,7 +73,7 @@ data class Student(
         }
     }
 
-    companion object {
+    companion object Examination{
         fun createStudent(params: Map<String, Any?>): Student? {
             val id = params["id"] as? Int ?: return null
             val lastName = params["lastName"] as? String ?: return null
@@ -96,7 +100,7 @@ data class Student(
         }
 
         fun isValidPhone(phone: String): Boolean {
-            return phone.matches(Regex("^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$"))
+            return phone.matches(Regex("^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{10}$"))
         }
         fun isValidTelegram(telegram: String): Boolean {
             return telegram.matches(Regex("^@[0-9a-zA-Z]{3,}$"))
