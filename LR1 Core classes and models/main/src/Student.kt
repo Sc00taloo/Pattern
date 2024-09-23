@@ -20,9 +20,8 @@ data class Student(
         if(!isValidMiddleName(middleName) || middleName == ""){
             throw IllegalArgumentException("Неправильный формат отчества")
         }
-        // Проверка номера телефон
-        if (!Examination.isValidPhone(phone!!) || phone == "") {
-            throw IllegalArgumentException("Неправильный формат номера телефона")
+        if (!isValidPhone(phone!!) && phone != null) {
+            throw IllegalArgumentException("Неправильный формат телефона")
         }
     }
 
@@ -72,7 +71,7 @@ data class Student(
     fun hasContact(): Boolean {
         return !phone.isNullOrBlank() || !telegram.isNullOrBlank() || !email.isNullOrBlank()
     }
-    private fun validate() : Boolean {
+    fun validate() : Boolean {
         return hasGit() && hasContact()
     }
 

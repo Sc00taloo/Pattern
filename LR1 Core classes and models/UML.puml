@@ -1,0 +1,30 @@
+@startuml
+class Student {
+    - id: Int
+    - lastName: String
+    - firstName: String
+    - middleName: String
+    - phone: String?
+    - telegram: String?
+    - email: String?
+    - git: String?
+    --
+    + toString(): String
+    + set_contacts(phone: String?, telegram: String?, email: String?, git: String?): Unit
+    + hasGit(): Boolean
+    + hasContact(): Boolean
+    + validate(): Boolean
+}
+class Examination {
+    + isValidPhone(phone: String): Boolean
+    + isValidTelegram(telegram: String): Boolean
+    + isValidEmail(email: String): Boolean
+    + isValidGit(git: String): Boolean
+    + isValidisValidFirstName(firstName: String): Boolean
+    + isValidFirstName(firstName: String): Boolean
+    + isValidMiddleName(middleName: String): Boolean
+    + validateFIO(lastName: String, firstName: String, middleName: String): Boolean
+    + createStudent(params: Map<String, Any?>): Student?
+}
+Student -down-> Examination : <<companion object>>
+@enduml
