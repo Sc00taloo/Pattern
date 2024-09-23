@@ -64,41 +64,19 @@ data class Student(
     override fun toString(): String {
         return "Student(id=$id, fullName='${getFullName()}', phone=$phone, telegram=$telegram, email=$email, git=$git)"
     }
-
-    private fun validate(vararg contacts: String) {
-        if (contacts.any { isValidGit(it) || (isValidPhone(it) || isValidTelegram(it) || isValidEmail(it)) }) {
-            //pass
-        } else {
-            throw IllegalArgumentException("Неверный формат контакта или гит")
-        }
+    // Проверка наличия гита
+    fun hasGit(): Boolean {
+        return git != null && git!!.isNotBlank()
+    }
+    // Проверка наличия хотя бы одного контакта
+    fun hasContact(): Boolean {
+        return !phone.isNullOrBlank() || !telegram.isNullOrBlank() || !email.isNullOrBlank()
+    }
+    private fun validate() : Boolean {
+        return hasGit() && hasContact()
     }
 
     companion object Examination{
-        fun createStudent(params: Map<String, Any?>): Student? {
-            val id = params["id"] as? Int ?: return null
-            val lastName = params["lastName"] as? String ?: return null
-            val firstName = params["firstName"] as? String ?: return null
-            val middleName = params["middleName"] as? String ?: return null
-            val phone = params["phone"] as? String
-            val telegram = params["telegram"] as? String
-            val email = params["email"] as? String
-            val git = params["git"] as? String
-            if (validateFIO(lastName, firstName, middleName) &&
-                (phone == null || isValidPhone(phone)) &&
-                (telegram == null || isValidTelegram(telegram)) &&
-                (email == null || isValidEmail(email)) &&
-                (git == null || isValidGit(git))
-            ) {
-                return Student(id, lastName, firstName, middleName, phone, telegram, email, git)
-            } else {
-                println("Студент не создался")
-                return null
-            }
-        }
-        private fun validateFIO(lastName: String, firstName: String, middleName: String): Boolean {
-            return isValidLastName(lastName) && isValidFirstName(firstName) && isValidMiddleName(middleName)
-        }
-
         fun isValidPhone(phone: String): Boolean {
             return phone.matches(Regex("^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{10}$"))
         }
@@ -119,6 +97,37 @@ data class Student(
         }
         fun isValidMiddleName(middleName: String): Boolean {
             return middleName.matches(Regex("^[А-ЯA-ZЁ]{1}[а-яa-zё]{2,}$"))
+        }
+
+        private fun validateFIO(lastName: String, firstName: String, middleName: String): Boolean {
+            return isValidLastName(lastName) && isValidFirstName(firstName) && isValidMiddleName(middleName)
+        }
+
+        fun createStudent(params: Map<String, Any?>): Student? {
+            val id = params["id"] as? Int ?: return null
+            val lastName = params["lastName"] as? String ?: return null
+            val firstName = params["firstName"] as? String ?: return null
+            val middleName = params["middleName"] as? String ?: return null
+            val phone = params["phone"] as? String
+            val telegram = params["telegram"] as? String
+            val email = params["email"] as? String
+            val git = params["git"] as? String
+            if (validateFIO(lastName, firstName, middleName) &&
+                (phone == null || isValidPhone(phone)) &&
+                (telegram == null || isValidTelegram(telegram)) &&
+                (email == null || isValidEmail(email)) &&
+                (git == null || isValidGit(git))
+            ) {
+                val student = Student(id, lastName, firstName, middleName, phone, telegram, email, git)
+                if (!student.validate()) {
+                    println("У студента должен быть Git и любой контакт.")
+                    return null
+                }
+                return student
+            } else {
+                println("Студент не создался")
+                return null
+            }
         }
     }
 }
