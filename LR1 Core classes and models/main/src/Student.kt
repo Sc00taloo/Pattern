@@ -1,6 +1,6 @@
 package main.src
 
-data class Student(
+class Student(
     var id: Int,
     var lastName: String,
     var firstName: String,
@@ -17,10 +17,7 @@ data class Student(
         if(!isValidFirstName(firstName) || firstName == ""){
             throw IllegalArgumentException("Неправильный формат имя")
         }
-        if(!isValidMiddleName(middleName) || middleName == ""){
-            throw IllegalArgumentException("Неправильный формат отчества")
-        }
-        if (!isValidPhone(phone!!) && phone != null) {
+        if (phone != null && !isValidPhone(phone!!)) {
             throw IllegalArgumentException("Неправильный формат телефона")
         }
     }
@@ -65,7 +62,7 @@ data class Student(
     }
     // Проверка наличия гита
     fun hasGit(): Boolean {
-        return git != null && git!!.isNotBlank()
+        return git?.isNotBlank() == true
     }
     // Проверка наличия хотя бы одного контакта
     fun hasContact(): Boolean {
@@ -74,6 +71,17 @@ data class Student(
     fun validate() : Boolean {
         return hasGit() && hasContact()
     }
+
+    constructor(studentArgs: HashMap<String,Any?>) : this(
+        id = studentArgs["id"] as Int,
+        firstName = studentArgs["firstName"].toString(),
+        lastName = studentArgs["lastName"].toString(),
+        middleName = studentArgs["middleName"].toString(),
+        phone = studentArgs.getOrDefault("phone",null) as String?,
+        telegram = studentArgs.getOrDefault("telegram",null) as String?,
+        email = studentArgs.getOrDefault("email",null) as String?,
+        git = studentArgs.getOrDefault("git",null) as String?
+    )
 
     companion object Examination{
         fun isValidPhone(phone: String): Boolean {
@@ -101,32 +109,35 @@ data class Student(
         private fun validateFIO(lastName: String, firstName: String, middleName: String): Boolean {
             return isValidLastName(lastName) && isValidFirstName(firstName) && isValidMiddleName(middleName)
         }
-
-        fun createStudent(params: Map<String, Any?>): Student? {
-            val id = params["id"] as? Int ?: return null
-            val lastName = params["lastName"] as? String ?: return null
-            val firstName = params["firstName"] as? String ?: return null
-            val middleName = params["middleName"] as? String ?: return null
-            val phone = params["phone"] as? String
-            val telegram = params["telegram"] as? String
-            val email = params["email"] as? String
-            val git = params["git"] as? String
-            if (validateFIO(lastName, firstName, middleName) &&
-                (phone == null || isValidPhone(phone)) &&
-                (telegram == null || isValidTelegram(telegram)) &&
-                (email == null || isValidEmail(email)) &&
-                (git == null || isValidGit(git))
-            ) {
-                val student = Student(id, lastName, firstName, middleName, phone, telegram, email, git)
-                if (!student.validate()) {
-                    println("У студента должен быть Git и любой контакт.")
-                    return null
-                }
-                return student
-            } else {
-                println("Студент не создался")
-                return null
-            }
-        }
     }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class Person {
+    var name: String
+    var age: Int
+
+    constructor(name: String, age: Int) {
+        this.name = name
+        this.age = age
+    }
+
+    constructor(name: String) : this(name, 0)
 }
