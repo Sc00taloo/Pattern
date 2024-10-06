@@ -24,7 +24,6 @@ class Examination {
     + isValidFirstName(firstName: String): Boolean
     + isValidMiddleName(middleName: String): Boolean
     + validateFIO(lastName: String, firstName: String, middleName: String): Boolean
-    + createStudent(params: Map<String, Any?>): Student?
 }
 Student -down-> Examination : <<companion object>>
 @enduml

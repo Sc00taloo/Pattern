@@ -1,7 +1,6 @@
 import main.src.Student
 
 fun main() {
-    val students = mutableListOf<Student>();
     val student1 = Student(
             id = 1,
             lastName = "Иван",
@@ -55,27 +54,27 @@ fun main() {
         Pair("git","https://github.com/Github")
     ))
     println(student1)
-    println(student1?.validate())
+    println(student1.validate())
     println(student2)
-    println(student2?.validate())
+    println(student2.validate())
     println(student3)
-    println(student3?.validate())
+    println(student3.validate())
     println(student4)
-    println(student4?.validate())
+    println(student4.validate())
     println(student5)
-    println(student5?.validate())
+    println(student5.validate())
     println(student6)
-    println(student6?.validate())
+    println(student6.validate())
 
-    student2?.set_contacts(email = "nikolai1970@mail.ru")
-    student5?.set_contacts(telegram = "@hackmoise11")
+    student2.set_contacts(email = "nikolai1970@mail.ru")
+    student5.set_contacts(telegram = "@hackmoise11")
     println(student2)
-    println(student2?.validate())
+    println(student2.validate())
     println(student5)
-    println(student5?.validate())
+    println(student5.validate())
 
     try {
-        student1?.set_contacts(phone = "+73124")
+        student1.set_contacts(phone = "+73124")
     } catch (e: IllegalArgumentException) {
         println("Ошибка: ${e.message}")
     }
