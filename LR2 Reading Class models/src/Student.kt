@@ -84,18 +84,76 @@ class Student(
     )
 
     //Вот это новое. Принимает на вход строку, которую парсит
+//    constructor(studentString: String) : this(
+//        id = studentString.split(",")[0].toInt(),
+//        lastName = studentString.split(",")[1],
+//        firstName = studentString.split(",")[2],
+//        middleName = studentString.split(",")[3],
+//        phone = studentString.split(",").getOrNull(4),
+//        telegram = studentString.split(",").getOrNull(5),
+//        email = studentString.split(",").getOrNull(6),
+//        git = studentString.split(",").getOrNull(7)
+//    )
+
+    // Новый конструктор, принимающий строку
     constructor(studentString: String) : this(
         id = studentString.split(",")[0].toInt(),
-        lastName = studentString.split(",")[1],
-        firstName = studentString.split(",")[2],
-        middleName = studentString.split(",")[3],
-        phone = studentString.split(",").getOrNull(4),
-        telegram = studentString.split(",").getOrNull(5),
-        email = studentString.split(",").getOrNull(6),
-        git = studentString.split(",").getOrNull(7)
+        lastName = parseLastName(studentString),
+        firstName = parseFirstName(studentString),
+        middleName = parseMiddleName(studentString).toString(),
+        phone = parsePhone(studentString),
+        telegram = parseTelegram(studentString),
+        email = parseEmail(studentString),
+        git = parseGit(studentString)
     )
 
     companion object Examination{
+        //Парсинг фамилии
+        private fun parseLastName(studentString: String): String {
+            val lastName = studentString.split(",").getOrNull(1) ?: throw IllegalArgumentException("Нет фамилии!")
+            if (!isValidLastName(lastName)) throw IllegalArgumentException("Неправильный формат фамилии")
+            return lastName
+        }
+        //Парсинг имя
+        private fun parseFirstName(studentString: String): String {
+            val firstName = studentString.split(",").getOrNull(2) ?: throw IllegalArgumentException("Нет имени!")
+            if (!isValidFirstName(firstName)) throw IllegalArgumentException("Неправильный формат имени")
+            return firstName
+        }
+        //Парсинг отчества
+        private fun parseMiddleName(studentString: String): String? {
+            val middelName = studentString.split(",").getOrNull(3)
+            if (middelName != null && !isValidMiddleName(middelName)) throw IllegalArgumentException("Неправильный формат отчества")
+            return middelName
+        }
+        //Парсинг телефона
+        private fun parsePhone(studentString: String): String? {
+            val phone = studentString.split(",").getOrNull(4)
+            if (phone == null || phone == "") return null
+            else if (!isValidPhone(phone)) throw IllegalArgumentException("Неправильный формат телефона")
+            return phone
+        }
+        //Парсинг телеграмма
+        private fun parseTelegram(studentString: String): String? {
+            val telegram =  studentString.split(",").getOrNull(5)
+            if (telegram == null || telegram == "") return null
+            else if (!isValidTelegram(telegram)) throw IllegalArgumentException("Неправильный формат телеграмма")
+            return telegram
+        }
+        //Парсинг почты
+        private fun parseEmail(studentString: String): String? {
+            val email = studentString.split(",").getOrNull(6)
+            if (email == null || email == "") return null
+            else if (!isValidEmail(email)) throw IllegalArgumentException("Неправильный формат почты")
+            return email
+        }
+        //Парсинг гита
+        private fun parseGit(studentString: String): String {
+            val git = studentString.split(",").getOrNull(7) ?: throw IllegalArgumentException("Нет гита!")
+            if (!isValidGit(git)) throw IllegalArgumentException("Неправильный формат гита")
+            return git
+        }
+
         fun isValidPhone(phone: String): Boolean {
             return phone.matches(Regex("^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{10}$"))
         }
