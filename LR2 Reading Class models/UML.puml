@@ -1,0 +1,47 @@
+@startuml
+class SuperStudent {
+        - id: Int
+        - lastName: String
+        - firstName: String
+        - middleName: String
+        - phone: String?
+        - telegram: String?
+        - email: String?
+        - git: String?
+
+        + validate(): Boolean
+        + hasGit(): Boolean
+        + hasContact(): Boolean
+        + getInfo(): String
+        + toString(): String
+}
+
+    class Student {
+        + set_contacts(phone: String?, telegram: String?, email: String?, git: String?)
+        + constructor(studentString: String)
+        + toString(): String
+    }
+
+    class Student_short {
+        + toString(): String
+        + constructor(student: Student)
+        + constructor(id: Int, studentString: String)
+    }
+
+    class Examination {
+        + students: MutableList<Student>
+        + isValidPhone(phone: String): Boolean
+        + isValidTelegram(telegram: String): Boolean
+        + isValidEmail(email: String): Boolean
+        + isValidGit(git: String): Boolean
+        + isValidFirstName(firstName: String): Boolean
+        + isValidLastName(lastName: String): Boolean
+        + isValidMiddleName(middleName: String): Boolean
+        + read_from_txt(filePath: String): List<SuperStudent>
+        + write_to_txt(filePath: String, students: List<Student>)
+        + getStudent(): List<Student>
+    }
+Student -down-> Examination : <<companion object>>
+SuperStudent <|-- Student
+SuperStudent <|-- Student_short
+@enduml
