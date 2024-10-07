@@ -81,5 +81,6 @@ fun main() {
 
     val studentString = "7,Пупкин,Иван,Сергеевич,+79001234567,@pup99,,https://github.com/Testikpup"
     val student = Student(studentString)
-    println(student)
+    println(student.getInfo())
+    //println(student)
 }

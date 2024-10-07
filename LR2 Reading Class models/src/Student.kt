@@ -71,7 +71,21 @@ class Student(
     fun validate() : Boolean {
         return hasGit() && hasContact()
     }
-
+    //Новое getInfo
+    fun getInfo(): String {
+        return "Фамилия:$firstName; git:$git; связь:${getContactInfo()}"
+    }
+    //Новое getInfo
+    private fun getContactInfo(): String {
+        val contactMethod = when {
+            telegram != null -> "Telegram $telegram"
+            email != null -> "Email $email"
+            phone != null -> "Phone $phone"
+            else -> "Нет доступных средств связи"
+        }
+        return contactMethod
+    }
+    
     constructor(studentArgs: HashMap<String,Any?>) : this(
         id = studentArgs["id"] as Int,
         firstName = studentArgs["firstName"].toString(),
