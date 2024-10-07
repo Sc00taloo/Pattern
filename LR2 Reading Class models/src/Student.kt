@@ -56,6 +56,7 @@ class Student(
     )
 
     companion object Examination{
+        val students = mutableListOf<Student>()
         fun isValidPhone(phone: String): Boolean {
             return phone.matches(Regex("^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{10}$"))
         }
@@ -82,10 +83,9 @@ class Student(
             val file = File(filePath)
 
             if (!file.exists() || !file.canRead()) {
-                throw IllegalArgumentException("Файл по указанному адресу недоступен: $filePath")
+                throw IllegalArgumentException("Файл недоступен: $filePath")
             }
-
-            val students = mutableListOf<SuperStudent>()
+            //val students = mutableListOf<SuperStudent>()
             file.forEachLine { line ->
                 try{
                     val student = Student(line)
@@ -93,9 +93,26 @@ class Student(
                 } catch (e: IllegalArgumentException) {
                     println("Ошибка: \"$line\"")
                 }
-
             }
             return students
+        }
+
+        fun write_to_txt(filePath: String, students: List<Student>) {
+            val file = File(filePath)
+            file.bufferedWriter().use { writer ->
+                students.forEach { student ->
+                    writer.write(
+                        "${student.id};${student.lastName};${student.firstName};${student.middleName ?: ""};" +
+                                "${student.phone ?: ""};${student.telegram ?: ""};${student.email ?: ""};${student.git ?: ""}"
+                    )
+                    writer.newLine()
+                }
+            }
+        }
+
+        // Список студентов получает данный метод
+        fun getStudent(): List<Student> {
+            return students.toList()
         }
     }
 }
