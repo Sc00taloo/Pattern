@@ -1,52 +1,18 @@
 import main.src.Student
 import main.src.Student_short
+import main.src.SuperStudent
 
 fun main() {
-//    val student1 = Student(
-//        id = 1,
-//        lastName = "Иван",
-//        firstName = "Попов",
-//        middleName = "Викторович",
-//        phone = "+78005553535",
-//        git = "https://github.com/Sc00taloo"
-//    )
-//    val student2 = Student(
-//        id = 2,
-//        lastName = "Николай",
-//        firstName = "Палыч",
-//        middleName = "Победоносный",
-//        email = "sobaka12@gmail.com",
-//        git = "https://github.com/SlivkiShow"
-//    )
-//    val student3 = Student(
-//        id = 3,
-//        lastName = "Денисова",
-//        firstName = "Анастасия",
-//        middleName = "Давидовна",
-//        telegram = "@denis",
-//        git = "https://github.com/Denisochka"
-//    )
-//    val student4 = Student(
-//        id = 4,
-//        lastName = "Пономарёв",
-//        firstName = "Максим",
-//        middleName = "Фёдорович",
-//        phone = "+79451239009",
-//        telegram = "@pomafyo123",
-//        email = "pomafyo123@mail.ru",
-//        git = "https://github.com/Killer2016"
-//    )
-//    val student5 = Student(
-//        id = 5,
-//        lastName = "Моисеева",
-//        firstName = "Арина",
-//        middleName = "Арсентьева",
-//        phone = "+79451239009",
-//        telegram = "@moise11",
-//        git = "https://github.com/TrueProg"
-//    )
-//
-    val student6 = Student(6,"Косян","Артём","Власович", phone = "+79214325674", git="https://github.com/Kosyan")
+    val inputFilePath = "students.txt"
+    try {
+        // Чтение студентов из входного файла
+        val studentsFromFile = Student.read_from_txt(inputFilePath)
+        println(studentsFromFile.forEach { println(it.getInfo()) })
+
+    } catch (e: Exception) {
+        println("Не удалось прочесть файл")
+    }
+    //val student6 = Student(6,"Косян","Артём","Власович", phone = "+79214325674", git="https://github.com/Kosyan")
 //    println(student1)
 //    println(student1.validate())
 //    println(student2)
@@ -73,12 +39,12 @@ fun main() {
 //        println("Ошибка: ${e.message}")
 //    }
 
-    val studentString = "Пупкин,Иван,Сергеевич,+79001234567,@pup99,,https://github.com/Testikpup"
-    val studentShort1 = Student_short(2,studentString)
-    println(studentShort1)
-
-    val studentShort2 = Student_short(student6)
-    println(studentShort2)
+//    val studentString = "Пупкин,Иван,Сергеевич,+79001234567,@pup99,,https://github.com/Testikpup"
+//    val studentShort1 = Student_short(2,studentString)
+//    println(studentShort1)
+//
+//    val studentShort2 = Student_short(student6)
+//    println(studentShort2)
     //val student = Student(studentString)
     //println(student.getInfo())
     //println(student)

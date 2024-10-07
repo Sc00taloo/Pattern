@@ -1,4 +1,6 @@
 package main.src
+import java.io.File
+import java.lang.Exception
 
 open class SuperStudent(
     var id: Int,
@@ -30,17 +32,13 @@ open class SuperStudent(
     fun getInfo(): String {
         val initials = "${firstName.first()}.${middleName.firstOrNull()?.toString() ?: ""}."
         val FIO = "$lastName $initials".trim()
-        return FIO
-    }
-    //Новое getInfo
-    fun getContactInfo(): String {
         val contactMethod = when {
             telegram != null -> "Telegram $telegram"
             email != null -> "Email $email"
             phone != null -> "Phone $phone"
             else -> "Нет доступных средств связи"
         }
-        return contactMethod
+        return "Инициаллы:$FIO; Git:$git; Контакт:$contactMethod"
     }
 
     override fun toString(): String {

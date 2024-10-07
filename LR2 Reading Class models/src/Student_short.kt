@@ -26,13 +26,13 @@ class Student_short(
         id = id,
         lastName = studentString.split(",")[0],
         firstName = studentString.split(",")[1],
-        middleName = studentString.split(",")[2],
-        phone = studentString.split(",")[3],
-        telegram = studentString.split(",")[4],
-        email = studentString.split(",")[5],
-        git = studentString.split(",")[6]
+        middleName = studentString.split(",").getOrNull(2).toString(),
+        phone = studentString.split(",").getOrNull(3),
+        telegram = studentString.split(",").getOrNull(4),
+        email = studentString.split(",").getOrNull(5),
+        git = studentString.split(",").getOrNull(6)
     )
     override fun toString(): String {
-        return "Student_short(id=$id, Инициалы='${getInfo()}', git=$git, контакт='${getContactInfo()}')"
+        return "Student_short(id=$id, ${getInfo()})"
     }
 }

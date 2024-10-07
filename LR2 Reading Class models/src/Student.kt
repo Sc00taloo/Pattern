@@ -1,5 +1,7 @@
 package main.src
 
+import java.io.File
+
 class Student(
     id: Int,
     lastName: String,
@@ -46,11 +48,11 @@ class Student(
         id = studentString.split(",")[0].toInt(),
         lastName = studentString.split(",")[1],
         firstName = studentString.split(",")[2],
-        middleName = studentString.split(",")[3],
-        phone = studentString.split(",")[4],
-        telegram = studentString.split(",")[5],
-        email = studentString.split(",")[6],
-        git = studentString.split(",")[7],
+        middleName = studentString.split(",").getOrNull(3).toString(),
+        phone = studentString.split(",").getOrNull(4),
+        telegram = studentString.split(",").getOrNull(5),
+        email = studentString.split(",").getOrNull(6),
+        git = studentString.split(",").getOrNull(7),
     )
 
     companion object Examination{
@@ -74,6 +76,26 @@ class Student(
         }
         fun isValidMiddleName(middleName: String): Boolean {
             return middleName.matches(Regex("^[А-ЯA-ZЁ]{1}[а-яa-zё]{2,}$"))
+        }
+
+        fun read_from_txt(filePath: String): List<SuperStudent> {
+            val file = File(filePath)
+
+            if (!file.exists() || !file.canRead()) {
+                throw IllegalArgumentException("Файл по указанному адресу недоступен: $filePath")
+            }
+
+            val students = mutableListOf<SuperStudent>()
+            file.forEachLine { line ->
+                try{
+                    val student = Student(line)
+                    students.add(student)
+                } catch (e: IllegalArgumentException) {
+                    println("Ошибка: \"$line\"")
+                }
+
+            }
+            return students
         }
     }
 }
