@@ -1,4 +1,5 @@
 import main.src.Student
+import main.src.Student_short
 
 fun main() {
 //    val student1 = Student(
@@ -45,14 +46,14 @@ fun main() {
 //        git = "https://github.com/TrueProg"
 //    )
 //
-//    val student6 = Student(hashMapOf(
-//        Pair("id", 6),
-//        Pair("lastName", "Косян"),
-//        Pair("firstName", "Артём"),
-//        Pair("middleName", "Власович"),
-//        Pair("phone","+79451239009"),
-//        Pair("git","https://github.com/Github")
-//    ))
+    val student6 = Student(hashMapOf(
+        Pair("id", 6),
+        Pair("lastName", "Косян"),
+        Pair("firstName", "Артём"),
+        Pair("middleName", "Власович"),
+        Pair("phone","+79451239009"),
+        Pair("git","https://github.com/Github")
+    ))
 //    println(student1)
 //    println(student1.validate())
 //    println(student2)
@@ -79,8 +80,13 @@ fun main() {
 //        println("Ошибка: ${e.message}")
 //    }
 
-    val studentString = "7,Пупкин,Иван,Сергеевич,+79001234567,@pup99,,https://github.com/Testikpup"
-    val student = Student(studentString)
-    println(student.getInfo())
+    val studentString = "Пупкин,Иван,Сергеевич,+79001234567,@pup99,,https://github.com/Testikpup"
+    val studentShort1 = Student_short(2,studentString)
+    println(studentShort1)
+
+    val studentShort2 = Student_short(student6)
+    println(studentShort2)
+    //val student = Student(studentString)
+    //println(student.getInfo())
     //println(student)
 }

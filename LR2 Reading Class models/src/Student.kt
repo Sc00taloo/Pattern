@@ -73,10 +73,12 @@ class Student(
     }
     //Новое getInfo
     fun getInfo(): String {
-        return "Фамилия:$firstName; git:$git; связь:${getContactInfo()}"
+        val initials = "${firstName.first()}.${middleName.firstOrNull()?.toString() ?: ""}."
+        val FIO = "$lastName $initials".trim()
+        return "Инициалы:$FIO; git:$git; связь:${getContactInfo()}"
     }
     //Новое getInfo
-    private fun getContactInfo(): String {
+    fun getContactInfo(): String {
         val contactMethod = when {
             telegram != null -> "Telegram $telegram"
             email != null -> "Email $email"
@@ -85,7 +87,7 @@ class Student(
         }
         return contactMethod
     }
-    
+
     constructor(studentArgs: HashMap<String,Any?>) : this(
         id = studentArgs["id"] as Int,
         firstName = studentArgs["firstName"].toString(),
