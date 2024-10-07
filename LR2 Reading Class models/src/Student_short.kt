@@ -1,53 +1,38 @@
 package main.src
 
 class Student_short(
-    var id: Int,
-    var FIO: String,
-    var git: String,
-    var contact: String
-) {
+    id: Int,
+    lastName: String,
+    firstName: String,
+    middleName: String,
+    phone: String? = null,
+    telegram: String? = null,
+    email: String? = null,
+    git: String? = null
+):SuperStudent(id, lastName, firstName, middleName, phone, telegram, email, git) {
     // Конструктор, принимающий объект класса Student
     constructor(student: Student) : this(
         id = student.id,
-        FIO = "${student.lastName} ${student.firstName.first()}.${student.middleName.firstOrNull()}.".trim(),
-        git = student.git.toString(),
-        contact = student.getContactInfo()
+        lastName = student.lastName,
+        firstName = student.firstName,
+        middleName = student.middleName,
+        phone = student.phone,
+        telegram = student.telegram,
+        email = student.email,
+        git = student.git
     )
-
     // Конструктор, принимающий ID и строку с информацией
     constructor(id: Int, studentString: String) : this(
         id = id,
-        FIO = parseFIO(studentString),
-        git = parseGit(studentString).toString(),
-        contact = parseContact(studentString)
+        lastName = studentString.split(",")[0],
+        firstName = studentString.split(",")[1],
+        middleName = studentString.split(",")[2],
+        phone = studentString.split(",")[3],
+        telegram = studentString.split(",")[4],
+        email = studentString.split(",")[5],
+        git = studentString.split(",")[6]
     )
-
-    companion object {
-        private fun parseFIO(studentString: String): String {
-            val parts = studentString.split(",")
-            val lastName = parts[0].trim()
-            val firstName = parts[1].trim()
-            val middleName = parts.getOrNull(2)?.trim() ?: ""
-            val initials = "${firstName.first()}.${middleName.firstOrNull()?.toString() ?: ""}."
-            return "$lastName $initials".trim()
-        }
-
-        private fun parseGit(studentString: String): String? {
-            return studentString.split(",").getOrNull(6)?.trim()
-        }
-
-        private fun parseContact(studentString: String): String {
-            val contactMethod = when {
-                studentString.split(",").getOrNull(3) != null -> "Phone ${studentString.split(",")[3]}"
-                studentString.split(",").getOrNull(4) != null -> "Telegram ${studentString.split(",")[4]}"
-                studentString.split(",").getOrNull(5) != null -> "Email ${studentString.split(",")[5]}"
-                else -> "Нет доступных средств связи"
-            }
-            return contactMethod
-        }
-    }
-
     override fun toString(): String {
-        return "Student_short(id=$id, Инициалы='$FIO', git=$git, контакт='$contact')"
+        return "Student_short(id=$id, Инициалы='${getInfo()}', git=$git, контакт='${getContactInfo()}')"
     }
 }

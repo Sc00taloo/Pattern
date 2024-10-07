@@ -46,14 +46,7 @@ fun main() {
 //        git = "https://github.com/TrueProg"
 //    )
 //
-    val student6 = Student(hashMapOf(
-        Pair("id", 6),
-        Pair("lastName", "Косян"),
-        Pair("firstName", "Артём"),
-        Pair("middleName", "Власович"),
-        Pair("phone","+79451239009"),
-        Pair("git","https://github.com/Github")
-    ))
+    val student6 = Student(6,"Косян","Артём","Власович", phone = "+79214325674", git="https://github.com/Kosyan")
 //    println(student1)
 //    println(student1.validate())
 //    println(student2)
