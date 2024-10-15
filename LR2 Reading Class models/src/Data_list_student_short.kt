@@ -4,7 +4,7 @@ class Data_list_student_short(students: List<Student_short>) : Data_list<Student
     override fun get_names(): List<String> {
         return listOf("Фамилия и Инициалы", "git", "contact")
     }
-    
+
     override fun get_data(): List<List<Any>> {
         val data = mutableListOf<List<Any>>()
 
