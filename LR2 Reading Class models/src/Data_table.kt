@@ -1,4 +1,4 @@
-class Data_table(private val data: Array<Array<Any>>) {
+class Data_table<T>(private val data: Array<Array<T>>) {
     // Метод для получения количества строк
     fun getRowCount(): Int {
         return data.size
@@ -8,11 +8,11 @@ class Data_table(private val data: Array<Array<Any>>) {
         return if (data.isNotEmpty()) data[0].size else 0
     }
     // Метод для получения значения по индексу
-    fun getValue(row: Int, column: Int): Any? {
-        return if (row in data.indices && column in data[row].indices) {
-            data[row][column]
+    fun getValue(row: Int, column: Int): T {
+        if (row in data.indices && column in data[row].indices) {
+            return data[row][column]
         } else {
-            null // если индексы выходят за пределы
+            throw IndexOutOfBoundsException("Недопустимые индексы: строка $row, столбец $column")
         }
     }
 }

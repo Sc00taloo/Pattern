@@ -1,6 +1,7 @@
-class Data_list<T : Comparable<T>>(private val data: MutableList<T> = mutableListOf()) {
-    private val selectedIndices = mutableSetOf<Int>() // хранит индексы выделенных элементов
+import main.src.Student_short
 
+open class Data_list<T>(private val data: List<Student_short> = mutableListOf()) {
+    private val selectedIndices = mutableSetOf<Int>()
     // выделения элемента по номеру
     fun select(number: Int) {
         if (number in data.indices) {
@@ -14,7 +15,7 @@ class Data_list<T : Comparable<T>>(private val data: MutableList<T> = mutableLis
     }
 
     // получения имён атрибутов
-    fun get_names(): List<String> {
+    open fun get_names(): List<String> {
         return if (data.isEmpty()) {
             emptyList()
         } else {
@@ -25,7 +26,7 @@ class Data_list<T : Comparable<T>>(private val data: MutableList<T> = mutableLis
     }
 
     // получение данных в виде списка списков
-    fun getData(): List<List<Any>> {
+    open fun get_data(): List<List<Any>> {
         return if (data.isEmpty()) {
             emptyList()
         } else {
@@ -38,7 +39,7 @@ class Data_list<T : Comparable<T>>(private val data: MutableList<T> = mutableLis
     }
 
     // получение значений атрибутов объекта
-    private fun getValues(element: T): List<Any> {
+    private fun getValues(element: Student_short): List<Any> {
         // все поля класса, кроме id
         return element::class.java.declaredFields
             .filter { it.name != "id" }
