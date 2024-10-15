@@ -1,7 +1,7 @@
 import main.src.Student_short
 
 class Data_list_student_short(students: List<Student_short>) : Data_list<Student_short>(students) {
-    override fun get_names(): List<String> {
+    fun get_names(): List<String> {
         return listOf("Фамилия и Инициалы", "git", "contact")
     }
 

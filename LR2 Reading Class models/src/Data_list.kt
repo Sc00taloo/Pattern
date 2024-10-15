@@ -14,28 +14,10 @@ open class Data_list<T>(private val data: List<Student_short> = mutableListOf())
         return selectedIndices.toList()
     }
 
-    // получения имён атрибутов
-    open fun get_names(): List<String> {
-        return if (data.isEmpty()) {
-            emptyList()
-        } else {
-            data.first()::class.java.declaredFields
-                .map { it.name }
-                .filter { it != "id" }
-        }
-    }
-
     // получение данных в виде списка списков
+    // паттерн применение
     open fun get_data(): List<List<Any>> {
-        return if (data.isEmpty()) {
-            emptyList()
-        } else {
-            val names = get_names().toMutableList().apply { add(0, "№") }
-            val values = data.mapIndexed { index, element ->
-                listOf(index + 1) + getValues(element)
-            }
-            listOf(names) + values
-        }
+        throw IllegalArgumentException("Данный метод необходимо реализовать в классе наследнике")
     }
 
     // получение значений атрибутов объекта
