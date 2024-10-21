@@ -1,0 +1,4 @@
+2;Николай;Палыч;Победоносный;+79214326586;@nikitochka;sobaka12@gmail.com;https://github.com/SlivkiShow
+4;Пономарёв;Максим;Максимович;+79451239009;@pomafyo123;pomafyo123@mail.ru;https://github.com/Killer2016
+1;Попов;Иван;Викторович;+78005553535;@scooty;iptru@mail.ru;https://github.com/Sc00taloo
+3;Косян;Артём;Власович;+79214325674;;;https://github.com/Kosyan
