@@ -1,7 +1,9 @@
 package main.src
 import java.io.File
 import java.lang.Exception
+import kotlinx.serialization.Serializable
 
+@Serializable
 open class SuperStudent(
     var id: Int,
     var lastName: String,
@@ -42,6 +44,6 @@ open class SuperStudent(
     }
 
     override fun toString(): String {
-        return "Student(id=$id, fullName='${getInfo()}', phone=$phone, telegram=$telegram, email=$email, git=$git)"
+        return "Student(id=$id, fullName='${getInfo()}')"
     }
 }
