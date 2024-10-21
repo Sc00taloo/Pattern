@@ -15,4 +15,10 @@ class Data_table<T>(private val data: Array<Array<T>>) {
             throw IndexOutOfBoundsException("Недопустимые индексы: строка $row, столбец $column")
         }
     }
+
+    fun displayTable() {
+        for (row in data) {
+            println(row.joinToString(" "))
+        }
+    }
 }
