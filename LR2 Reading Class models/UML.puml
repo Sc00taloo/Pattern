@@ -1,47 +1,81 @@
 @startuml
 class SuperStudent {
-        - id: Int
-        - lastName: String
-        - firstName: String
-        - middleName: String
-        - phone: String?
-        - telegram: String?
-        - email: String?
-        - git: String?
+    - id: Int
+    - lastName: String
+    - firstName: String
+    - middleName: String
+    - phone: String?
+    - telegram: String?
+    - email: String?
+    - git: String?
 
-        + validate(): Boolean
-        + hasGit(): Boolean
-        + hasContact(): Boolean
-        + getInfo(): String
-        + toString(): String
+    + validate(): Boolean
+    + hasGit(): Boolean
+    + hasContact(): Boolean
+    + getInfo(): String
+    + toString(): String
 }
 
-    class Student {
-        + set_contacts(phone: String?, telegram: String?, email: String?, git: String?)
-        + constructor(studentString: String)
-        + toString(): String
-    }
+class Student {
+    + set_contacts(phone: String?, telegram: String?, email: String?, git: String?)
+    + constructor(studentString: String)
+    + toString(): String
+}
 
-    class Student_short {
-        + toString(): String
-        + constructor(student: Student)
-        + constructor(id: Int, studentString: String)
-    }
+class Student_short {
+    id: integer
+    git: String
+    contact: String
+    + toString(): String
+    + constructor(student: Student)
+    + constructor(id: Int, studentString: String)
+}
 
-    class Examination {
-        + students: MutableList<Student>
-        + isValidPhone(phone: String): Boolean
-        + isValidTelegram(telegram: String): Boolean
-        + isValidEmail(email: String): Boolean
-        + isValidGit(git: String): Boolean
-        + isValidFirstName(firstName: String): Boolean
-        + isValidLastName(lastName: String): Boolean
-        + isValidMiddleName(middleName: String): Boolean
-        + read_from_txt(filePath: String): List<SuperStudent>
-        + write_to_txt(filePath: String, students: List<Student>)
-        + getStudent(): List<Student>
-    }
+class Data_list<T> {
+    - data: List<T>
+    - selectedIndices: MutableSet<Int>
+--
+    + select(number: Int): Unit
+    + get_selected(): List<Int>
+    + get_names(): List<List<Any>>
+    + get_data(): List<List<Any>>
+}
+
+class Data_list_student_short {
+    + students: List<Student_short>
+    + get_names(): List<List<Any>>
+    + get_data(): List<List<Any>>
+}
+
+class Data_table<T> {
+    - data: Array<Array<T>>
+--
+    + getRowCount(): Int
+    + getColumnCount(): Int
+    + getValue(row: Int, column: Int): T
+    + displayTable(): Unit
+}
+
+class Examination {
+    + students: MutableList<Student>
+    + isValidPhone(phone: String): Boolean
+    + isValidTelegram(telegram: String): Boolean
+    + isValidEmail(email: String): Boolean
+    + isValidGit(git: String): Boolean
+    + isValidFirstName(firstName: String): Boolean
+    + isValidLastName(lastName: String): Boolean
+    + isValidMiddleName(middleName: String): Boolean
+    + read_from_txt(filePath: String): List<SuperStudent>
+    + write_to_txt(filePath: String, students: List<Student>)
+    + getStudent(): List<Student>
+    + read_from_txt(filePath: String): List<SuperStudent>
+    + write_to_txt(filePath: String, students: List<Student>)
+}
+
 Student -down-> Examination : <<companion object>>
 SuperStudent <|-- Student
 SuperStudent <|-- Student_short
+Data_list ^-- Data_list_student_short
+Data_list_student_short o--Student_short
+Data_list ..>Data_table
 @enduml
