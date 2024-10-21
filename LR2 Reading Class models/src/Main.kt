@@ -3,14 +3,6 @@ import main.src.Student_short
 import main.src.SuperStudent
 
 fun main() {
-//    val input = "students.txt"
-//    try {
-//        val studentsFromFile = Student.read_from_txt(input)
-//        println(studentsFromFile.forEach { println(it.getInfo()) })
-//
-//    } catch (e: Exception) {
-//        println("Не удалось прочесть файл")
-//    }
 //
 //    val output = "output.txt"
 //    try {
