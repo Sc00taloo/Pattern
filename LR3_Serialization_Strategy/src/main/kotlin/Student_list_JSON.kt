@@ -1,12 +1,19 @@
 package main.src
 
+import Data_list
+import StudentListInterface
+import main.src.Student_short
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.*
+import kotlinx.serialization.decodeFromString
+import main.src.Student.Examination
 import java.io.File
 
-class Students_list_JSON(filePath: String) : StudentsList(filePath) {
-    // a. Чтение из файла
-    override fun readFromFile() {
+class Student_list_JSON : StudentListInterface {
+    private val json = Json { ignoreUnknownKeys = true }
+
+    override fun readFromFile(filePath: String): List<Student> {
         val file = File(filePath)
 
         if (!file.exists() || !file.canRead()) {
@@ -14,13 +21,14 @@ class Students_list_JSON(filePath: String) : StudentsList(filePath) {
         }
 
         val jsonString = file.readText()
-        students.addAll(Json.decodeFromString<List<Student>>(jsonString))
+        //Student.students = Json.decodeFromString(jsonString)
+        //return Student.students
+        return json.decodeFromString(jsonString)
     }
 
-    // b. Запись в файл
-    override fun writeToFile() {
-        val file = File("output_json.json")
-        val jsonString = Json.encodeToString(students)
+    override fun writeToFile(filePath: String, students: List<Student>) {
+        val file = File(filePath)
+        val jsonString = json.encodeToString(students)
         file.writeText(jsonString)
     }
 }

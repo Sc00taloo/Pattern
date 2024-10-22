@@ -15,7 +15,7 @@ class Student_short(
         id = student.id,
         lastName = student.lastName,
         firstName = student.firstName,
-        middleName = student.middleName,
+        middleName = student.middleName.toString(),
         phone = student.phone,
         telegram = student.telegram,
         email = student.email,

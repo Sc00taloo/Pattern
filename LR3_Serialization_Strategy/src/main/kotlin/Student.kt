@@ -1,17 +1,18 @@
 package main.src
 
-import java.io.File
+import kotlinx.serialization.Serializable
 
-class Student(
-    id: Int,
-    lastName: String,
-    firstName: String,
-    middleName: String,
-    phone: String? = null,
-    telegram: String? = null,
-    email: String? = null,
-    git: String? = null
-) : SuperStudent(id, lastName, firstName, middleName, phone, telegram, email, git) {
+@Serializable
+data class Student(
+    var id: Int,
+    val lastName: String,
+    val firstName: String,
+    var middleName: String? = null,
+    var phone: String? = null,
+    var telegram: String? = null,
+    var email: String? = null,
+    var git: String? = null
+) {
     fun set_contacts(phone: String? = null, telegram: String? = null, email: String? = null, git: String? = null) {
         if (phone != null) {
             if (isValidPhone(phone)) {
@@ -55,8 +56,24 @@ class Student(
         git = studentString.split(",").getOrNull(7),
     )
 
+    fun getInfo(): String {
+        val initials = "${firstName.first()}.${middleName?.firstOrNull()?.toString() ?: ""}."
+        val FIO = "$lastName $initials".trim()
+        val contactMethod = when {
+            telegram != null -> "Telegram $telegram"
+            email != null -> "Email $email"
+            phone != null -> "Phone $phone"
+            else -> "Нет доступных средств связи"
+        }
+        return "Инициаллы:$FIO; Git:$git; Контакт:$contactMethod"
+    }
+
+    override fun toString(): String {
+        return "Student(id=$id, fullName='${getInfo()}')"
+    }
+
     companion object Examination{
-        val students = mutableListOf<Student>()
+        var students = mutableListOf<Student>()
         fun isValidPhone(phone: String): Boolean {
             return phone.matches(Regex("^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{10}$"))
         }
