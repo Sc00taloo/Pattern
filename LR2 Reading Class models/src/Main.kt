@@ -78,13 +78,11 @@ fun main() {
     val selectedIndices = dataList.get_selected()
     println("Выбранные индексы: $selectedIndices")
 
-    // получение данных студентов
-    val data = dataList.get_data()
-    println("Данные студентов:")
-    data.forEach { println(it) }
-
     // получение всего кроме id
     val names = dataList.get_names()
-    println("Наименования атрибутов:")
-    names.forEach { println(it) }
+    println(names)
+
+    // получение данных студентов
+    val data = dataList.get_data()
+    data.forEach { println(it) }
 }
