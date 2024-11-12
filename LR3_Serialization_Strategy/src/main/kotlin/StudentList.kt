@@ -1,4 +1,5 @@
 import main.src.Student
+import main.src.StudentListInterface
 import main.src.Student_short
 
 class StudentsList(private var strategy: StudentListInterface) {

@@ -1,5 +1,4 @@
 package main.src
-import StudentListInterface
 import java.io.File
 
 class Student_list_txt : StudentListInterface {

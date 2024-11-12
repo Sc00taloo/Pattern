@@ -28,20 +28,29 @@ open class SuperStudent(
     fun validate() : Boolean {
         return hasGit() && hasContact()
     }
-    //Новое getInfo
-    fun getInfo(): String {
+
+    fun FIO(): String {
         val initials = "${firstName.first()}.${middleName.firstOrNull()?.toString() ?: ""}."
-        val FIO = "$lastName $initials".trim()
-        val contactMethod = when {
-            telegram != null -> "Telegram $telegram"
-            email != null -> "Email $email"
-            phone != null -> "Phone $phone"
+        val tet = "$lastName $initials".trim()
+        return tet
+    }
+    fun contactMethod(): String{
+        val contact = when {
+            telegram != null -> "Telegram_$telegram"
+            email != null -> "Email_$email"
+            phone != null -> "Phone_$phone"
             else -> "Нет доступных средств связи"
         }
-        return "Инициаллы:$FIO; Git:$git; Контакт:$contactMethod"
+        return contact
+    }
+    //Новое getInfo
+    fun getInfo(): String {
+        val fio = FIO()
+        val contact = contactMethod()
+        return "Инициаллы:$fio; Git:$git; Контакт:$contact"
     }
 
     override fun toString(): String {
-        return "Student(id=$id, fullName='${getInfo()}')"
+        return "Student(id=$id, fullName='${getInfo()}', phone=$phone, telegram=$telegram, email=$email, git=$git)"
     }
 }

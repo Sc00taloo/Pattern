@@ -17,7 +17,7 @@ open class Data_list<T>(val data: List<T> = mutableListOf()) {
     }
 
     // получение значений атрибутов объекта
-    open fun get_names(): List<List<Any>> {
+    open fun get_names(): List<String> {
         throw IllegalArgumentException("Данный метод необходимо реализовать в классе наследнике")
     }
 

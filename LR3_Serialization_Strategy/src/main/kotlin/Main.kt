@@ -65,24 +65,24 @@ fun main() {
 //    println(studentsFromFileYAML.getStudent())
 
     // с txt файлом
-    val txtStrategy = Student_list_txt()
-    val studentsListTxt = StudentsList(txtStrategy)
-    studentsListTxt.readStudents("students.txt")
-    println(studentsListTxt.getStudentShortCount())
-
-    studentsListTxt.sortStudents()
-    println(studentsListTxt.getStudents())
-
-    studentsListTxt.getStudentById(1)
-
-    val student6 = Student(6,"Косян","Артём","Власович", phone = "+79214325674", git="https://github.com/Kosyan")
-    studentsListTxt.replaceStudentById(3, student6)
-    println(studentsListTxt.getStudents())
-
-    studentsListTxt.writeStudents("output.txt")
-
-    studentsListTxt.removeStudentById(3)
-    println(studentsListTxt.getStudents())
+//    val txtStrategy = Student_list_txt()
+//    val studentsListTxt = StudentsList(txtStrategy)
+//    studentsListTxt.readStudents("students.txt")
+//    println(studentsListTxt.getStudentShortCount())
+//
+//    studentsListTxt.sortStudents()
+//    println(studentsListTxt.getStudents())
+//
+//    studentsListTxt.getStudentById(1)
+//
+//    val student6 = Student(6,"Косян","Артём","Власович", phone = "+79214325674", git="https://github.com/Kosyan")
+//    studentsListTxt.replaceStudentById(3, student6)
+//    println(studentsListTxt.getStudents())
+//
+//    studentsListTxt.writeStudents("output.txt")
+//
+//    studentsListTxt.removeStudentById(3)
+//    println(studentsListTxt.getStudents())
 
 
     // с json файлом
@@ -108,22 +108,22 @@ fun main() {
 
 
     // с yaml файлом
-//    val yamlStrategy = Student_list_YAML()
-//    val studentsListYaml = StudentsList(yamlStrategy)
-//    studentsListYaml.readStudents("student_yaml.yaml")
-//    println(studentsListYaml.getStudentShortCount())
-//
-//    studentsListYaml.sortStudents()
-//    println(studentsListYaml.getStudents())
-//
-//    studentsListYaml.getStudentById(1)
-//
-//    val student6 = Student(6,"Косян","Артём","Власович", phone = "+79214325674", git="https://github.com/Kosyan")
-//    studentsListYaml.replaceStudentById(3, student6)
-//    println(studentsListYaml.getStudents())
-//
-//    studentsListYaml.writeStudents("output.yaml")
-//
-//    studentsListYaml.removeStudentById(3)
-//    println(studentsListYaml.getStudents())
+    val yamlStrategy = Student_list_YAML()
+    val studentsListYaml = StudentsList(yamlStrategy)
+    studentsListYaml.readStudents("student_yaml.yaml")
+    println(studentsListYaml.getStudentShortCount())
+
+    studentsListYaml.sortStudents()
+    println(studentsListYaml.getStudents())
+
+    studentsListYaml.getStudentById(1)
+
+    val student6 = Student(6,"Косян","Артём","Власович", phone = "+79214325674", git="https://github.com/Kosyan")
+    studentsListYaml.replaceStudentById(3, student6)
+    println(studentsListYaml.getStudents())
+
+    studentsListYaml.writeStudents("output.yaml")
+
+    studentsListYaml.removeStudentById(3)
+    println(studentsListYaml.getStudents())
 }

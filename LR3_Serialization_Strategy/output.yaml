@@ -1,14 +1,14 @@
--
-  id: 1
-  lastName: "Попов"
-  firstName: "Иван"
-  middleName: "Викторович"
-  phone: "+78005553535"
-  telegram: "@scooty"
-  email: "iptru@mail.ru"
-  git: "https://github.com/Sc00taloo"
--
-  id: 2
+---
+- id: 3
+  lastName: "Косян"
+  firstName: "Артём"
+  middleName: "Власович"
+  phone: "+79214325674"
+  telegram: null
+  email: null
+  git: "https://github.com/Kosyan"
+  info: "Инициаллы:Косян А.В.; Git:https://github.com/Kosyan; Контакт:Phone_+79214325674"
+- id: 2
   lastName: "Николай"
   firstName: "Палыч"
   middleName: "Победоносный"
@@ -16,17 +16,8 @@
   telegram: "@nikitochka"
   email: "sobaka12@gmail.com"
   git: "https://github.com/SlivkiShow"
--
-  id: 3
-  lastName: "Денисова"
-  firstName: "Анастасия"
-  middleName: "Давидовна"
-  phone: ""
-  telegram: "@denis"
-  email: ""
-  git: "https://github.com/Denisochka"
--
-  id: 4
+  info: "Инициаллы:Николай П.П.; Git:https://github.com/SlivkiShow; Контакт:Telegram_@nikitochka"
+- id: 4
   lastName: "Пономарёв"
   firstName: "Максим"
   middleName: "Максимович"
@@ -34,12 +25,13 @@
   telegram: "@pomafyo123"
   email: "pomafyo123@mail.ru"
   git: "https://github.com/Killer2016"
--
-  id: 5
-  lastName: "Косян"
-  firstName: "Артём"
-  middleName: "Власович"
-  phone: "+79214325674"
-  telegram: ""
-  email: ""
-  git: "https://github.com/Kosyan"
+  info: "Инициаллы:Пономарёв М.М.; Git:https://github.com/Killer2016; Контакт:Telegram_@pomafyo123"
+- id: 1
+  lastName: "Попов"
+  firstName: "Иван"
+  middleName: "Викторович"
+  phone: "+78005553535"
+  telegram: "@scooty"
+  email: "iptru@mail.ru"
+  git: "https://github.com/Sc00taloo"
+  info: "Инициаллы:Попов И.В.; Git:https://github.com/Sc00taloo; Контакт:Telegram_@scooty"
