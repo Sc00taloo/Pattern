@@ -9,9 +9,7 @@ class Student_list_YAML() : StudentListInterface {
     private val objectMapper = ObjectMapper(YAMLFactory()).apply {
         registerModule(KotlinModule())
     }
-    private var students: MutableList<Student> = mutableListOf()
 
-    // a. Чтение всех значений из файла
     override fun readFromFile(filePath: String): List<Student> {
         val file = File(filePath)
         return if (file.exists()) {
@@ -24,7 +22,6 @@ class Student_list_YAML() : StudentListInterface {
         }
     }
 
-    // b. Запись всех значений в файл
     override fun writeToFile(filePath: String, students: List<Student>) {
         val file = File(filePath)
         objectMapper.writeValue(file, students)

@@ -60,8 +60,8 @@ data class Student(
         val initials = "${firstName.first()}.${middleName?.firstOrNull()?.toString() ?: ""}."
         val FIO = "$lastName $initials".trim()
         val contactMethod = when {
-            telegram != null -> "Telegram_$telegram"
-            email != null -> "Email_$email"
+            telegram != null && telegram != "" && telegram != " "-> "Telegram_$telegram"
+            email != null && email != "" && email != " " -> "Email_$email"
             phone != null -> "Phone_$phone"
             else -> "Нет доступных средств связи"
         }

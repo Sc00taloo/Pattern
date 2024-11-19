@@ -2,7 +2,7 @@ import main.src.Student
 import main.src.StudentListInterface
 import main.src.Student_short
 
-class StudentsList(private var strategy: StudentListInterface) {
+class StudentsList(public var strategy: StudentListInterface) {
     private val students: MutableList<Student> = mutableListOf()
 
     // Чтение из файла

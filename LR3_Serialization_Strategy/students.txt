@@ -1,5 +1,5 @@
 1,Попов,Иван,Викторович,+78005553535,@scooty,iptru@mail.ru,https://github.com/Sc00taloo
 2,Николай,Палыч,Победоносный,+79214326586,@nikitochka,sobaka12@gmail.com,https://github.com/SlivkiShow
-3,Денисова,Анастасия,Давидовна,@denis,https://github.com/Denisochka
+3,Денисова,Анастасия,Давидовна, ,@denis, ,https://github.com/Denisochka
 4,Пономарёв,Максим,Максимович,+79451239009,@pomafyo123,pomafyo123@mail.ru,https://github.com/Killer2016
-5,Косян,Артём,Власович,+79214325674,https://github.com/Kosyan
+5,Косян,Артём,Власович,+79214325674, , ,https://github.com/Kosyan
