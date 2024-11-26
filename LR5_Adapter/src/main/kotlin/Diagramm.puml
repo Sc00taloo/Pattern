@@ -88,9 +88,15 @@ students:MutableList<Student>
 +getStudents(): List<Student>
 }
 
-class StudentListInterface{
+interface StudentListInterface {
 #readFromFile(filePath: String): List<Student>
 #writeToFile(filePath: String, students: List<Student>)
+    +getStudentById(id: Int): Student?
+    +get_k_n_student_short_list(k: Int, n: Int): Data_list<Student_short>
+    +addStudent(student: Student)
+    +updateStudent(id: Int, student: Student)
+    +deleteStudent(id: Int)
+    +getStudentShortCount(): Int
 }
 
 class Student_list_txt{
@@ -122,6 +128,60 @@ class Student_list_DB {
     + deleteStudent(id: Int)
     + getTotalStudents(): Int
 }
+
+abstract class Student_list_DB_Adapter {
+    +getStudentById(id: Int): Student?
+    +get_k_n_student_short_list(k: Int, n: Int): Data_list<Student_short>
+    +addStudent(student: Student)
+    +updateStudent(id: Int, student: Student)
+    +deleteStudent(id: Int)
+    +getStudentShortCount(): Int
+}
+
+' Класс Student_list_json_adapter
+class Student_list_json_adapter {
+    +students: MutableList<Student>
+    +readFromFile(filePath: String): List<Student>
+    +writeToFile(filePath: String)
+}
+
+' Класс Student_list_txt_adapter
+class Student_list_txt_adapter {
+    +students: MutableList<Student>
+    +loadStudents()
+    +saveStudents()
+}
+
+' Класс Student_list_yaml_adapter
+class Student_list_yaml_adapter {
+    +students: MutableList<Student>
+    +readFromFile(filePath: String): List<Student>
+    +writeToFile(filePath: String, students: List<Student>)
+}
+
+' Класс Student_list_DB
+class Student_list_DB {
+    +getStudentById(id: Int): Student?
+    +get_k_n_student_short_list(k: Int, n: Int): Data_list<Student_short>
+    +addStudent(student: Student)
+    +updateStudent(id: Int, student: Student)
+    +deleteStudent(id: Int)
+    +getTotalStudents(): Int
+}
+
+' Связь интерфейса и классов-адаптеров
+Student_list_json_adapter -|> StudentListInterface
+Student_list_txt_adapter -|> StudentListInterface
+Student_list_yaml_adapter -|> StudentListInterface
+Student_list_DB_Adapter -|> StudentListInterface
+
+' Связь классов адаптеров с их источниками
+Student_list_json_adapter --> Student_list_JSON
+Student_list_txt_adapter --> Student_list_txt
+Student_list_yaml_adapter --> Student_list_YAML
+
+' Связь адаптера для базы данных с классом базы данных
+Student_list_DB_Adapter --> Student_list_DB
 
 Student_list_DB --> SuperStudent
 Data_list --> Student_short
