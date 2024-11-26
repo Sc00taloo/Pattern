@@ -111,9 +111,26 @@ class Student_list_YAML{
 -writeToFile(filePath: String, students: List<Student>)
 }
 
+class Student_list_DB {
+    - connection: Connection
+    - instance: Student_list_DB?
+    + getInstance(): Student_list_DB
+    + getStudentById(id: Int): Student?
+    + get_k_n_student_short_list(k: Int, n: Int): Data_list<Student_short>
+    + addStudent(student: Student)
+    + updateStudent(id: Int, student: Student)
+    + deleteStudent(id: Int)
+    + getTotalStudents(): Int
+}
+
+Student_list_DB --> SuperStudent
+Data_list --> Student_short
+Data_list --> Student
+SuperStudent ..>Data_list
+SuperStudent ..>Data_table
 Student -down-> Examination : <<companion object>>
-SuperStudent <|-- Student
-SuperStudent <|-- Student_short
+SuperStudent ..> Student
+SuperStudent ..> Student_short
 Data_list ^-- Data_list_student_short
 Data_list_student_short o--Student_short
 Data_list ..>Data_table

@@ -3,7 +3,6 @@ import main.src.Student_short
 import java.sql.*
 
 class Student_list_DB private constructor(private val connection: Connection) {
-
     companion object {
         private var instance: Student_list_DB? = null
 
@@ -18,7 +17,7 @@ class Student_list_DB private constructor(private val connection: Connection) {
 
     // a. Получить объект класса Student по ID
     fun getStudentById(id: Int): Student? {
-        val sql = "SELECT * FROM students WHERE id = ?"
+        val sql = "SELECT * FROM student WHERE id = ?"
         val statement = connection.prepareStatement(sql)
         statement.setInt(1, id)
         val resultSet = statement.executeQuery()
@@ -41,7 +40,7 @@ class Student_list_DB private constructor(private val connection: Connection) {
 
     // b. Получить список k по счету n объектов класса Student_short
     fun get_k_n_student_short_list(k: Int, n: Int): Data_list<Student_short> {
-        val sql = "SELECT * FROM students LIMIT ? OFFSET ?"
+        val sql = "SELECT * FROM student LIMIT ? OFFSET ?"
         val statement = connection.prepareStatement(sql)
         statement.setInt(1, k)
         statement.setInt(2, (n - 1) * k)  // Оffset: (n-1) * k
@@ -62,7 +61,7 @@ class Student_list_DB private constructor(private val connection: Connection) {
 
     // c. Добавить объект класса Student в таблицу
     fun addStudent(student: Student) {
-        val sql = "INSERT INTO students (lastname, firstname, middlename, phone, telegram, email, git) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        val sql = "INSERT INTO student (lastname, firstname, middlename, phone, telegram, email, git) VALUES (?, ?, ?, ?, ?, ?, ?)"
         val statement = connection.prepareStatement(sql)
         statement.setString(1, student.lastName)
         statement.setString(2, student.firstName)
@@ -76,7 +75,7 @@ class Student_list_DB private constructor(private val connection: Connection) {
 
     // d. Заменить элемент по ID
     fun updateStudent(id: Int, student: Student) {
-        val sql = "UPDATE students SET lastname = ?, firstname = ?, middlename = ?, phone = ?, telegram = ?, email = ?, git = ? WHERE id = ?"
+        val sql = "UPDATE student SET lastname = ?, firstname = ?, middlename = ?, phone = ?, telegram = ?, email = ?, git = ? WHERE id = ?"
         val statement = connection.prepareStatement(sql)
         statement.setString(1, student.lastName)
         statement.setString(2, student.firstName)
@@ -91,7 +90,7 @@ class Student_list_DB private constructor(private val connection: Connection) {
 
     // e. Удалить элемент по ID
     fun deleteStudent(id: Int) {
-        val sql = "DELETE FROM students WHERE id = ?"
+        val sql = "DELETE FROM student WHERE id = ?"
         val statement = connection.prepareStatement(sql)
         statement.setInt(1, id)
         statement.executeUpdate()
@@ -99,7 +98,7 @@ class Student_list_DB private constructor(private val connection: Connection) {
 
     // f. Получить количество элементов
     fun getTotalStudents(): Int {
-        val sql = "SELECT COUNT(*) FROM students"
+        val sql = "SELECT COUNT(*) FROM student"
         val statement = connection.createStatement()
         val resultSet = statement.executeQuery(sql)
 

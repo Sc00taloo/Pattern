@@ -141,5 +141,12 @@ fun main() {
 //        e.printStackTrace()
 //    }
 
-    DB.executeSelect()
+    //DB.executeSelect()
+    val studentDB = Student_list_DB.getInstance()
+    println(studentDB.getStudentById(2))
+    println(studentDB.getTotalStudents())
+
+    val student = Student(6,"Ковальчук","Никита","Витальевич", telegram = "@nikito", git="https://github.com/niknik")
+    studentDB.addStudent(student)
+    println(studentDB.getStudentById(6))
 }
