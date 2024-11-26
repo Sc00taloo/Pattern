@@ -45,15 +45,27 @@ data class Student(
     }
 
     // Новый конструктор, принимающий строку
-    constructor(studentString: String) : this(
-        id = studentString.split(",")[0].toInt(),
-        lastName = studentString.split(",")[1],
-        firstName = studentString.split(",")[2],
-        middleName = studentString.split(",").getOrNull(3).toString(),
-        phone = studentString.split(",").getOrNull(4),
-        telegram = studentString.split(",").getOrNull(5),
-        email = studentString.split(",").getOrNull(6),
-        git = studentString.split(",").getOrNull(7),
+//    constructor(studentString: String) : this(
+//        id = studentString.split(",")[0].toInt(),
+//        lastName = studentString.split(",")[1],
+//        firstName = studentString.split(",")[2],
+//        middleName = studentString.split(",").getOrNull(3).toString(),
+//        phone = studentString.split(",").getOrNull(4),
+//        telegram = studentString.split(",").getOrNull(5),
+//        email = studentString.split(",").getOrNull(6),
+//        git = studentString.split(",").getOrNull(7),
+//    )
+
+    // hash
+    constructor(hash: String) : this(
+        id = hash.substring(0, 3).toInt(),
+        lastName = hash.substring(3, 8),
+        firstName = hash.substring(8, 13),
+        middleName = hash.substring(13, 18),
+        phone = if (hash.length > 18) hash.substring(18, 28) else null,
+        telegram = if (hash.length > 28) hash.substring(28, 38) else null,
+        email = if (hash.length > 38) hash.substring(38, 48) else null,
+        git = if (hash.length > 48) hash.substring(48, 58) else null
     )
 
     fun getInfo(): String {
