@@ -52,7 +52,11 @@ class Student_list_DB private constructor(private val connection: Connection) {
                     id = resultSet.getInt("id"),
                     lastName = resultSet.getString("lastname"),
                     firstName = resultSet.getString("firstname"),
-                    middleName = resultSet.getString("middlename")
+                    middleName = resultSet.getString("middlename"),
+                    phone = resultSet.getString("phone"),
+                    telegram = resultSet.getString("telegram"),
+                    email = resultSet.getString("email"),
+                    git = resultSet.getString("git")
                 )
             )
         }
@@ -65,10 +69,10 @@ class Student_list_DB private constructor(private val connection: Connection) {
         val statement = connection.prepareStatement(sql)
         statement.setString(1, student.lastName)
         statement.setString(2, student.firstName)
-        statement.setString(3, student.middleName ?: "")
-        statement.setString(4, student.phone)
-        statement.setString(5, student.telegram)
-        statement.setString(6, student.email)
+        statement.setString(3, student.middleName?.takeIf { it.isNotBlank() })
+        statement.setString(4, student.phone?.takeIf { it.isNotBlank() })
+        statement.setString(5, student.telegram?.takeIf { it.isNotBlank() })
+        statement.setString(6, student.email?.takeIf { it.isNotBlank() })
         statement.setString(7, student.git)
         statement.executeUpdate()
     }

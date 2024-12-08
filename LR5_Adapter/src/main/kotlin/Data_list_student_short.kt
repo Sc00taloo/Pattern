@@ -1,6 +1,4 @@
-import main.src.Student
 import main.src.Student_short
-import main.src.SuperStudent
 
 class Data_list_student_short(students: List<Student_short>) : Data_list<Student_short>(students) {
     override fun get_names(): List<String> {

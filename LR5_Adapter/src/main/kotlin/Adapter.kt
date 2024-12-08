@@ -1,27 +1,23 @@
-// Старая версия API
-class OldPrinter {
-    fun printText(text: String) {
-        println("Printing: $text")
-    }
+interface USBDevice {
+    fun connectWithUSB()
 }
 
-// Новый интерфейс
-interface NewPrinterInterface {
-    fun printMessage(message: String)
+class MicroUSBDevice {
+    fun connectWithMicroUSB() {
+        println("Hello World!")
+    }
 }
 
 // Адаптер
-class PrinterAdapter(private val oldPrinter: OldPrinter) : NewPrinterInterface {
-    override fun printMessage(message: String) {
-        oldPrinter.printText(message)
+class MicroUSBToUSBAdapter(private val microUSBDevice: MicroUSBDevice) : USBDevice {
+    override fun connectWithUSB() {
+        println("Adapter work")
+        microUSBDevice.connectWithMicroUSB()
     }
 }
 
-// Клиентский код
 fun main() {
-    val oldPrinter = OldPrinter()
-    val adapter = PrinterAdapter(oldPrinter)
-
-    // Используем новый интерфейс
-    adapter.printMessage("Hello, Adapter Pattern!")
+    val microUSBDevice = MicroUSBDevice()
+    val usbAdapter: USBDevice = MicroUSBToUSBAdapter(microUSBDevice)
+    usbAdapter.connectWithUSB()
 }

@@ -1,6 +1,6 @@
 import main.src.Student_short
 
-open class Data_list<T>(val data: List<T> = mutableListOf()) {
+open class Data_list<T>(val data: List<Student_short> = mutableListOf()) {
     private val selectedIndices = mutableSetOf<Int>()
     // выделение элемента по номеру
     fun select(number: Int) {
