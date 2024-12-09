@@ -1,11 +1,11 @@
 import main.src.Student
 import main.src.Student_short
-import java.sql.*
+import java.sql.Connection
+import java.sql.DriverManager
 
 class Student_list_DB private constructor(private val connection: Connection) {
     companion object {
         private var instance: Student_list_DB? = null
-
         fun getInstance(): Student_list_DB {
             if (instance == null) {
                 val connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "aktirf")
@@ -43,7 +43,7 @@ class Student_list_DB private constructor(private val connection: Connection) {
         val sql = "SELECT * FROM student LIMIT ? OFFSET ?"
         val statement = connection.prepareStatement(sql)
         statement.setInt(1, k)
-        statement.setInt(2, (n - 1) * k)  // Оffset: (n-1) * k
+        statement.setInt(2, (n - 1) * k)
         val resultSet = statement.executeQuery()
         val studentShortList = mutableListOf<Student_short>()
         while (resultSet.next()) {
@@ -106,6 +106,23 @@ class Student_list_DB private constructor(private val connection: Connection) {
             resultSet.getInt(1)
         } else {
             0
+        }
+    }
+
+    fun executeSelect() {
+        val sql = "SELECT * FROM student"
+        val statement = connection.prepareStatement(sql)
+        val resultSet = statement.executeQuery()
+        while (resultSet.next()) {
+            println("ID: " + resultSet.getInt("id"))
+            println("lastname: " + resultSet.getString("lastname"))
+            println("firstname: " + resultSet.getString("firstname"))
+            println("middlename: " + resultSet.getString("middlename"))
+            println("phone: " + resultSet.getString("phone"))
+            println("telegram: " + resultSet.getString("telegram"))
+            println("email: " + resultSet.getString("email"))
+            println("git: " + resultSet.getString("git"))
+            println("---------------------------")
         }
     }
 }
