@@ -1,10 +1,20 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class MainWindow {
+    private static final int PAGE_SIZE = 20;
+    private int currentPage = 1;
+    private int totalRecords = 0;
+
+    private JTable studentTable;
+    private DefaultTableModel tableModel;
+
     public void createWindow() {
         JFrame frame = new JFrame("Students");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -154,10 +164,49 @@ public class MainWindow {
         gitAny.addActionListener(e -> gitField.setEnabled(false));
 
         // Таблица
-        String[] columnNames = {"ID", "Фамилия", "Имя", "Отчество", "Телефон", "Telegram", "Email", "Git"};
-        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
-        JTable studentTable = new JTable(tableModel);
+        String[] columnNames = {"ID", "Фамилия", "Имя", "Отчество", "Git", "Email", "Телефон", "Telegram"};
+        tableModel = new DefaultTableModel(columnNames, 0);
+        studentTable = new JTable(tableModel);
+        // Запрет на редактирование таблицы
+        studentTable.setDefaultEditor(Object.class, null);
+        // Сортировка по Фамилия
+        studentTable.getTableHeader().addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent evt) {
+                int col = studentTable.columnAtPoint(evt.getPoint());
+                // Провверка нажатия по Фамилия
+                if (col == 1) {
+                    sortTableByLastName();
+                }
+            }
+        });
         JScrollPane tableScrollPane = new JScrollPane(studentTable);
+        // Добавление тестовые хардкодинговых данные
+        List<Student> students = getDummyStudents();
+        totalRecords = students.size();
+        updateTableData(students, tableModel);
+
+
+        JPanel paginationPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JButton prevButton = new JButton("Предыдущая");
+        JButton nextButton = new JButton("Следующая");
+        JLabel pageLabel = new JLabel("Страница: " + currentPage + " из " + getTotalPages());
+        prevButton.addActionListener(e -> {
+            if (currentPage > 1) {
+                currentPage--;
+                updateTableData(students, tableModel);
+                pageLabel.setText("Страница: " + currentPage + " из " + getTotalPages());
+            }
+        });
+        nextButton.addActionListener(e -> {
+            if (currentPage < getTotalPages()) {
+                currentPage++;
+                updateTableData(students, tableModel);
+                pageLabel.setText("Страница: " + currentPage + " из " + getTotalPages());
+            }
+        });
+        paginationPanel.add(prevButton);
+        paginationPanel.add(pageLabel);
+        paginationPanel.add(nextButton);
 
         // Область управления
         JPanel controlPanel = new JPanel();
@@ -168,12 +217,156 @@ public class MainWindow {
         controlPanel.add(addButton2);
         controlPanel.add(addButton3);
 
+        JPanel centralPanel = new JPanel();
+        centralPanel.setLayout(new BoxLayout(centralPanel, BoxLayout.Y_AXIS));
+        centralPanel.add(tableScrollPane);
+        centralPanel.add(paginationPanel);
+
         // Добавляем области в панель вкладки
         panel.add(filterPanel, BorderLayout.NORTH);
-        panel.add(tableScrollPane, BorderLayout.CENTER);
+        panel.add(centralPanel, BorderLayout.CENTER);
         panel.add(controlPanel, BorderLayout.SOUTH);
 
         return panel;
     }
 
+    private void updateTableData(List<Student> students, DefaultTableModel tableModel) {
+        tableModel.setRowCount(0);
+        int statrIndex = (currentPage - 1) * PAGE_SIZE;
+        int endIndex = Math.min(currentPage * PAGE_SIZE, totalRecords);
+        for (int i = statrIndex; i < endIndex; i++) {
+            Student student = students.get(i);
+            tableModel.addRow(new Object[]{
+                    student.getId(),
+                    student.getLastName(),
+                    student.getFirstName(),
+                    student.getMiddleName(),
+                    student.getGit(),
+                    student.getEmail(),
+                    student.getPhone(),
+                    student.getTelegram()
+            });
+        }
+    }
+
+    private void updateStudent(List<Student> students, DefaultTableModel tableModel) {
+        tableModel.setRowCount(0);
+        int endIndex = Math.min(currentPage * PAGE_SIZE, totalRecords);
+        for (int i = 0; i < endIndex; i++) {
+            Student student = students.get(i);
+            tableModel.addRow(new Object[]{
+                    student.getId(),
+                    student.getLastName(),
+                    student.getFirstName(),
+                    student.getMiddleName(),
+                    student.getGit(),
+                    student.getEmail(),
+                    student.getPhone(),
+                    student.getTelegram()
+            });
+        }
+    }
+
+    // Количество страниц
+    private int getTotalPages() {
+        return (int) Math.ceil((double) totalRecords / PAGE_SIZE);
+    }
+
+    private List<Student> getDummyStudents() {
+        List<Student> students = new ArrayList<>();
+        students.add(new Student(1, "Иванов", "Иван", "Иванович", "https://github.com/ivanov", "ivanov@example.com", "123-456", "@ivanov"));
+        students.add(new Student(2, "Петров", "Петр", "Петрович", "https://github.com/petrov", "petrov@example.com", "987-654", "@petrov"));
+        students.add(new Student(3, "Сидорова", "Анна", "Сергеевна", "", "sid@example.com", "321-654", "@sid"));
+        students.add(new Student(4, "Иванов", "Иван", "Иванович", "https://github.com/ivanov", "ivanov@example.com", "123-456", "@ivanov"));
+        students.add(new Student(5, "Петров", "Петр", "Петрович", "https://github.com/petrov", "petrov@example.com", "987-654", "@petrov"));
+        students.add(new Student(6, "Сидорова", "Анна", "Сергеевна", "", "sid@example.com", "321-654", "@sid"));
+        students.add(new Student(7, "Иванов", "Иван", "Иванович", "https://github.com/ivanov", "ivanov@example.com", "123-456", "@ivanov"));
+        students.add(new Student(8, "Петров", "Петр", "Петрович", "https://github.com/petrov", "petrov@example.com", "987-654", "@petrov"));
+        students.add(new Student(9, "Сидорова", "Анна", "Сергеевна", "", "sid@example.com", "321-654", "@sid"));
+        students.add(new Student(10, "Иванов", "Иван", "Иванович", "https://github.com/ivanov", "ivanov@example.com", "123-456", "@ivanov"));
+        students.add(new Student(11, "Петров", "Петр", "Петрович", "https://github.com/petrov", "petrov@example.com", "987-654", "@petrov"));
+        students.add(new Student(12, "Сидорова", "Анна", "Сергеевна", "", "sid@example.com", "321-654", "@sid"));
+        students.add(new Student(13, "Иванов", "Иван", "Иванович", "https://github.com/ivanov", "ivanov@example.com", "123-456", "@ivanov"));
+        students.add(new Student(14, "Петров", "Петр", "Петрович", "https://github.com/petrov", "petrov@example.com", "987-654", "@petrov"));
+        students.add(new Student(15, "Сидорова", "Анна", "Сергеевна", "", "sid@example.com", "321-654", "@sid"));
+        students.add(new Student(16, "Иванов", "Иван", "Иванович", "https://github.com/ivanov", "ivanov@example.com", "123-456", "@ivanov"));
+        students.add(new Student(17, "Петров", "Петр", "Петрович", "https://github.com/petrov", "petrov@example.com", "987-654", "@petrov"));
+        students.add(new Student(18, "Сидорова", "Анна", "Сергеевна", "", "sid@example.com", "321-654", "@sid"));
+        students.add(new Student(19, "Иванов", "Иван", "Иванович", "https://github.com/ivanov", "ivanov@example.com", "123-456", "@ivanov"));
+        students.add(new Student(20, "Петров", "Петр", "Петрович", "https://github.com/petrov", "petrov@example.com", "987-654", "@petrov"));
+        students.add(new Student(21, "Сидорова", "Анна", "Сергеевна", "", "sid@example.com", "321-654", "@sid"));
+        students.add(new Student(22, "Иванов", "Иван", "Иванович", "https://github.com/ivanov", "ivanov@example.com", "123-456", "@ivanov"));
+        students.add(new Student(23, "Петров", "Петр", "Петрович", "https://github.com/petrov", "petrov@example.com", "987-654", "@petrov"));
+        students.add(new Student(24, "Сидорова", "Анна", "Сергеевна", "", "sid@example.com", "321-654", "@sid"));
+        return students;
+    }
+
+    // Метод для сортировки таблицы по Фамилии
+    private void sortTableByLastName() {
+        DefaultTableModel model = (DefaultTableModel) studentTable.getModel();
+        int rowCount = model.getRowCount();
+
+        List<Student> sortedStudents = new ArrayList<>();
+        for (int i = 0; i < rowCount; i++) {
+            int id = (int) model.getValueAt(i, 0);
+            String lastName = (String) model.getValueAt(i, 1);
+            String firstName = (String) model.getValueAt(i, 2);
+            String middleName = (String) model.getValueAt(i, 3);
+            String git = (String) model.getValueAt(i, 4);
+            String email = (String) model.getValueAt(i, 5);
+            String phone = (String) model.getValueAt(i, 6);
+            String telegram = (String) model.getValueAt(i, 7);
+
+            sortedStudents.add(new Student(id, lastName, firstName, middleName, git, email, phone, telegram));
+        }
+        // Сортируем студентов по Фамилии
+        sortedStudents.sort(Comparator.comparing(Student::getLastName));
+        updateStudent(sortedStudents, tableModel);
+    }
+
+    static class Student {
+        private final int id;
+        private final String lastName;
+        private final String firstName;
+        private final String middleName;
+        private final String git;
+        private final String email;
+        private final String phone;
+        private final String telegram;
+
+        public Student(int id, String lastName, String firstName, String middleName, String git, String email, String phone, String telegram) {
+            this.id = id;
+            this.lastName = lastName;
+            this.firstName = firstName;
+            this.middleName = middleName;
+            this.git = git;
+            this.email = email;
+            this.phone = phone;
+            this.telegram = telegram;
+        }
+        public int getId() {
+            return id;
+        }
+        public String getLastName() {
+            return lastName;
+        }
+        public String getFirstName() {
+            return firstName;
+        }
+        public String getMiddleName() {
+            return middleName;
+        }
+        public String getGit() {
+            return git;
+        }
+        public String getEmail() {
+            return email;
+        }
+        public String getPhone() {
+            return phone;
+        }
+        public String getTelegram() {
+            return telegram;
+        }
+    }
 }
