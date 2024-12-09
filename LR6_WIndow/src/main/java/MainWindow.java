@@ -1,11 +1,15 @@
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MainWindow {
     private static final int PAGE_SIZE = 20;
@@ -210,24 +214,141 @@ public class MainWindow {
 
         // Область управления
         JPanel controlPanel = new JPanel();
-        JButton addButton1 = new JButton("Кнопка1");
-        JButton addButton2 = new JButton("Кнопка2");
-        JButton addButton3 = new JButton("Кнопка3");
-        controlPanel.add(addButton1);
-        controlPanel.add(addButton2);
-        controlPanel.add(addButton3);
+        JButton addButton = new JButton("Добавить");
+        JButton editButton = new JButton("Изменить");
+        JButton deleteButton = new JButton("Удалить");
+        JButton refreshButton = new JButton("Обновить");
+
+        editButton.setEnabled(false);
+        deleteButton.setEnabled(false);
+
+        controlPanel.add(addButton);
+        controlPanel.add(editButton);
+        controlPanel.add(deleteButton);
+        controlPanel.add(refreshButton);
+
+        studentTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                int[] selectedRows = studentTable.getSelectedRows();
+                if (selectedRows.length == 1) {
+                    // Одна строка выделена
+                    editButton.setEnabled(true);
+                    deleteButton.setEnabled(true);
+                } else if (selectedRows.length > 1) {
+                    // Несколько строк выделены
+                    editButton.setEnabled(false);
+                    deleteButton.setEnabled(true);
+                } else {
+                    // Никакая строка не выделена
+                    editButton.setEnabled(false);
+                    deleteButton.setEnabled(false);
+                }
+            }
+        });
+
+        addButton.addActionListener(e -> {
+            System.out.println("Добавить студента");
+        });
+        editButton.addActionListener(e -> {
+            int selectedRow = studentTable.getSelectedRow();
+            if (selectedRow != -1) {
+                System.out.println("Изменить студента с ID: " + tableModel.getValueAt(selectedRow, 0));
+            }
+        });
+        deleteButton.addActionListener(e -> {
+            int[] selectedRows = studentTable.getSelectedRows();
+            if (selectedRows.length > 0) {
+                System.out.println("Удалить студентов: ");
+                for (int row : selectedRows) {
+                    System.out.println("ID: " + tableModel.getValueAt(row, 0));
+                }
+            }
+        });
+        refreshButton.addActionListener(e -> {
+            List<Student> filteredStudents = applyFilters(nameField.getText(), phoneField.getText(), telegramField.getText(), emailField.getText(), gitField.getText(),
+                    phoneGroup, telegramGroup, emailGroup, gitGroup);
+            updateStudent(filteredStudents, tableModel);
+        });
+
 
         JPanel centralPanel = new JPanel();
         centralPanel.setLayout(new BoxLayout(centralPanel, BoxLayout.Y_AXIS));
         centralPanel.add(tableScrollPane);
         centralPanel.add(paginationPanel);
-
         // Добавляем области в панель вкладки
         panel.add(filterPanel, BorderLayout.NORTH);
         panel.add(centralPanel, BorderLayout.CENTER);
         panel.add(controlPanel, BorderLayout.SOUTH);
-
         return panel;
+    }
+
+    private int getSelectedButtonIndex(ButtonGroup group) {
+        int index = 0;
+        for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements(); index++) {
+            AbstractButton button = buttons.nextElement();
+            if (button.isSelected()) {
+                return index;
+            }
+        }
+        return -1;
+    }
+
+    private boolean filterByNameAndInitials(Student student, String nameInput) {
+        String[] parts = nameInput.trim().split("\\s+");
+        String lastName = parts[0];
+
+        // Если введена только фамилия
+        if (parts.length == 1) {
+            return student.getLastName().equalsIgnoreCase(lastName);
+        }
+
+        if (parts.length == 2 || parts.length == 3) {
+            // Убираю точки, делаею заглавными
+            String initials = parts[1].replace(".", "").toUpperCase();
+            // Первая буква имени
+            String firstNameInitial = initials.substring(0, 1);
+            // Первая буква отчества
+            String middleNameInitial = (initials.length() > 1) ? initials.substring(1, 2) : "";
+            boolean matchesLastName = student.getLastName().equalsIgnoreCase(lastName);
+            boolean matchesFirstName = student.getFirstName().toUpperCase().startsWith(firstNameInitial);
+            boolean matchesMiddleName = middleNameInitial.isEmpty() ||
+                    student.getMiddleName().toUpperCase().startsWith(middleNameInitial);
+
+            return matchesLastName && matchesFirstName && matchesMiddleName;
+        }
+        return false;
+    }
+
+    private List<Student> applyFilters(String name, String phone, String telegram, String email, String git,
+                                       ButtonGroup phoneGroup, ButtonGroup telegramGroup, ButtonGroup emailGroup, ButtonGroup gitGroup) {
+        List<Student> filteredStudents = getDummyStudents();
+        if (!name.isEmpty()) {
+            filteredStudents = filteredStudents.stream()
+                    .filter(s -> filterByNameAndInitials(s, name))
+                    .collect(Collectors.toList());
+        }
+        if (!phone.isEmpty() && getSelectedButtonIndex(phoneGroup) == 0) {
+            filteredStudents = filteredStudents.stream()
+                    .filter(s -> s.getPhone().contains(phone))
+                    .collect(Collectors.toList());
+        }
+        if (!telegram.isEmpty() && getSelectedButtonIndex(telegramGroup) == 0) {
+            filteredStudents = filteredStudents.stream()
+                    .filter(s -> s.getTelegram().contains(telegram))
+                    .collect(Collectors.toList());
+        }
+        if (!email.isEmpty() && getSelectedButtonIndex(emailGroup) == 0) {
+            filteredStudents = filteredStudents.stream()
+                    .filter(s -> s.getEmail().contains(email))
+                    .collect(Collectors.toList());
+        }
+        if (!git.isEmpty() && getSelectedButtonIndex(gitGroup) == 0) {
+            filteredStudents = filteredStudents.stream()
+                    .filter(s -> s.getGit().contains(git))
+                    .collect(Collectors.toList());
+        }
+        return filteredStudents;
     }
 
     private void updateTableData(List<Student> students, DefaultTableModel tableModel) {
@@ -274,30 +395,30 @@ public class MainWindow {
 
     private List<Student> getDummyStudents() {
         List<Student> students = new ArrayList<>();
-        students.add(new Student(1, "Иванов", "Иван", "Иванович", "https://github.com/ivanov", "ivanov@example.com", "123-456", "@ivanov"));
+        students.add(new Student(1, "Попов", "Иван", "Иванович", "https://github.com/ivanov", "ivanov@example.com", "123-456", "@ivanov"));
         students.add(new Student(2, "Петров", "Петр", "Петрович", "https://github.com/petrov", "petrov@example.com", "987-654", "@petrov"));
         students.add(new Student(3, "Сидорова", "Анна", "Сергеевна", "", "sid@example.com", "321-654", "@sid"));
-        students.add(new Student(4, "Иванов", "Иван", "Иванович", "https://github.com/ivanov", "ivanov@example.com", "123-456", "@ivanov"));
-        students.add(new Student(5, "Петров", "Петр", "Петрович", "https://github.com/petrov", "petrov@example.com", "987-654", "@petrov"));
+        students.add(new Student(4, "Пономарёв","Максим","Максимович","https://github.com/Killer2016", "pomafyo123@mail.ru", "+79451239009","@pomafyo123"));
+        students.add(new Student(5, "Денисова","Анастасия","Давидовна","https://github.com/Denisochka","","","@denis"));
         students.add(new Student(6, "Сидорова", "Анна", "Сергеевна", "", "sid@example.com", "321-654", "@sid"));
-        students.add(new Student(7, "Иванов", "Иван", "Иванович", "https://github.com/ivanov", "ivanov@example.com", "123-456", "@ivanov"));
+        students.add(new Student(7, "Попов","Иван","Викторович","https://github.com/Sc00taloo","iptru@mail.ru","+78005553535","@scooty"));
         students.add(new Student(8, "Петров", "Петр", "Петрович", "https://github.com/petrov", "petrov@example.com", "987-654", "@petrov"));
         students.add(new Student(9, "Сидорова", "Анна", "Сергеевна", "", "sid@example.com", "321-654", "@sid"));
         students.add(new Student(10, "Иванов", "Иван", "Иванович", "https://github.com/ivanov", "ivanov@example.com", "123-456", "@ivanov"));
-        students.add(new Student(11, "Петров", "Петр", "Петрович", "https://github.com/petrov", "petrov@example.com", "987-654", "@petrov"));
-        students.add(new Student(12, "Сидорова", "Анна", "Сергеевна", "", "sid@example.com", "321-654", "@sid"));
-        students.add(new Student(13, "Иванов", "Иван", "Иванович", "https://github.com/ivanov", "ivanov@example.com", "123-456", "@ivanov"));
+        students.add(new Student(11,"Пономарёв","Максим","Максимович","https://github.com/Killer2016", "pomafyo123@mail.ru", "+79451239009","@pomafyo123"));
+        students.add(new Student(12,"Денисова","Анастасия","Давидовна","https://github.com/Denisochka","","","@denis"));
+        students.add(new Student(13, "Денисова","Анастасия","Давидовна","https://github.com/Denisochka","","","@denis"));
         students.add(new Student(14, "Петров", "Петр", "Петрович", "https://github.com/petrov", "petrov@example.com", "987-654", "@petrov"));
-        students.add(new Student(15, "Сидорова", "Анна", "Сергеевна", "", "sid@example.com", "321-654", "@sid"));
-        students.add(new Student(16, "Иванов", "Иван", "Иванович", "https://github.com/ivanov", "ivanov@example.com", "123-456", "@ivanov"));
+        students.add(new Student(15, "Попов","Иван","Викторович","https://github.com/Sc00taloo","iptru@mail.ru","+78005553535","@scooty"));
+        students.add(new Student(16, "Денисова","Анастасия","Давидовна","https://github.com/Denisochka","","","@denis"));
         students.add(new Student(17, "Петров", "Петр", "Петрович", "https://github.com/petrov", "petrov@example.com", "987-654", "@petrov"));
         students.add(new Student(18, "Сидорова", "Анна", "Сергеевна", "", "sid@example.com", "321-654", "@sid"));
         students.add(new Student(19, "Иванов", "Иван", "Иванович", "https://github.com/ivanov", "ivanov@example.com", "123-456", "@ivanov"));
-        students.add(new Student(20, "Петров", "Петр", "Петрович", "https://github.com/petrov", "petrov@example.com", "987-654", "@petrov"));
-        students.add(new Student(21, "Сидорова", "Анна", "Сергеевна", "", "sid@example.com", "321-654", "@sid"));
+        students.add(new Student(20, "Денисова","Анастасия","Давидовна","https://github.com/Denisochka","","","@denis"));
+        students.add(new Student(21, "Попов","Иван","Викторович","https://github.com/Sc00taloo","iptru@mail.ru","+78005553535","@scooty"));
         students.add(new Student(22, "Иванов", "Иван", "Иванович", "https://github.com/ivanov", "ivanov@example.com", "123-456", "@ivanov"));
         students.add(new Student(23, "Петров", "Петр", "Петрович", "https://github.com/petrov", "petrov@example.com", "987-654", "@petrov"));
-        students.add(new Student(24, "Сидорова", "Анна", "Сергеевна", "", "sid@example.com", "321-654", "@sid"));
+        students.add(new Student(24, "Пономарёв","Максим","Максимович","https://github.com/Killer2016", "pomafyo123@mail.ru", "+79451239009","@pomafyo123"));
         return students;
     }
 
