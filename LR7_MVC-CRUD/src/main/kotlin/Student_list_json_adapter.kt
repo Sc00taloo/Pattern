@@ -1,9 +1,6 @@
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import main.src.*
-import java.io.File
 
-class Student_list_json_adapter(private val jsonInstance: Student_list_txt) : Student_List_Adapter {
+class Student_list_json_adapter(private val jsonInstance: Student_list_JSON) : Student_List_Adapter {
     private val students: MutableList<Student> = mutableListOf()
 
     init {
