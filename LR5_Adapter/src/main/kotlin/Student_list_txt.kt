@@ -1,7 +1,8 @@
 package main.src
+import Student_List_Adapter
 import java.io.File
 
-class Student_list_txt : StudentListInterface {
+class Student_list_txt : StudentListInterface  {
     override fun readFromFile(filePath: String): List<Student> {
         val students = mutableListOf<Student>()
         val file = File(filePath)

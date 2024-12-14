@@ -8,7 +8,6 @@ class Student_list_yaml_adapter(private val yamlInstance: Student_list_YAML) : S
     private val students: MutableList<Student> = mutableListOf()
 
     init {
-        // Загружаем студентов из файла при создании
         students.addAll(yamlInstance.readFromFile("student_yaml.yaml"))
     }
 

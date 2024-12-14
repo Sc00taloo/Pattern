@@ -7,7 +7,6 @@ class Student_list_json_adapter(private val jsonInstance: Student_list_txt) : St
     private val students: MutableList<Student> = mutableListOf()
 
     init {
-        // Загружаем студентов из файла при создании
         students.addAll(jsonInstance.readFromFile("student_json.json"))
     }
 

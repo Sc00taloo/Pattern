@@ -157,14 +157,12 @@ fun main() {
     val txtAdapter = Students_List_txt_adapter(Student_list_txt())
     val studentListTxt = StudentList(txtAdapter)
 
-    println(studentListTxt.getStudentById(6))
-//
+    //println(studentListTxt.getStudentById(6))
+
     for (i in 0 until studentListTxt.getStudentShortCount() + 1) {
         val student = studentListTxt.getStudentById(i)
         if (student != null) {
             studentListDB.addStudent(student)
         }
     }
-
-
 }

@@ -12,7 +12,7 @@ class Students_List_DB_Adapter(private val dbInstance: Student_list_DB) : Studen
 
     override fun addStudent(student: Student): Int {
         dbInstance.addStudent(student)
-        return dbInstance.getTotalStudents() // Возвращаем новое количество студентов
+        return dbInstance.getTotalStudents()
     }
 
     override fun replaceStudentById(id: Int, newStudent: Student) {

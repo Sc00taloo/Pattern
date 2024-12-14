@@ -7,7 +7,6 @@ class Students_List_txt_adapter(private val txtInstance: Student_list_txt) : Stu
     private val students: MutableList<Student> = mutableListOf()
 
     init {
-        // Загружаем студентов из файла при создании
         students.addAll(txtInstance.readFromFile("students.txt"))
     }
 
