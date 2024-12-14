@@ -5,6 +5,10 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Enumeration;
@@ -39,6 +43,15 @@ public class MainWindow {
         JPanel thirdTab = new JPanel();
         thirdTab.add(new JLabel("Вкладка 3"));
         tabbedPane.addTab("Вкладка 3", thirdTab);
+
+        tabbedPane.addChangeListener(e -> {
+            int selectedIndex = tabbedPane.getSelectedIndex();
+            if (selectedIndex == 0) { // Если выбрана первая вкладка
+                // Обновляем данные в таблице
+                List<Student> updatedStudents = fetchStudentsFromDataSource();
+                updateTableData(updatedStudents, tableModel);
+            }
+        });
 
         frame.add(tabbedPane);
         frame.setVisible(true);
@@ -168,7 +181,7 @@ public class MainWindow {
         gitAny.addActionListener(e -> gitField.setEnabled(false));
 
         // Таблица
-        String[] columnNames = {"ID", "Фамилия", "Имя", "Отчество", "Git", "Email", "Телефон", "Telegram"};
+        String[] columnNames = {"ID", "Фамилия", "Имя", "Отчество", "Телефон", "Telegram", "Email", "Git"};
         tableModel = new DefaultTableModel(columnNames, 0);
         studentTable = new JTable(tableModel);
         // Запрет на редактирование таблицы
@@ -185,7 +198,7 @@ public class MainWindow {
         });
         JScrollPane tableScrollPane = new JScrollPane(studentTable);
         // Добавление тестовые хардкодинговых данные
-        List<Student> students = getDummyStudents();
+        List<Student> students = fetchStudentsFromDataSource();
         totalRecords = students.size();
         updateTableData(students, tableModel);
 
@@ -322,7 +335,7 @@ public class MainWindow {
 
     private List<Student> applyFilters(String name, String phone, String telegram, String email, String git,
                                        ButtonGroup phoneGroup, ButtonGroup telegramGroup, ButtonGroup emailGroup, ButtonGroup gitGroup) {
-        List<Student> filteredStudents = getDummyStudents();
+        List<Student> filteredStudents = fetchStudentsFromDataSource();
         if (!name.isEmpty()) {
             filteredStudents = filteredStudents.stream()
                     .filter(s -> filterByNameAndInitials(s, name))
@@ -393,32 +406,29 @@ public class MainWindow {
         return (int) Math.ceil((double) totalRecords / PAGE_SIZE);
     }
 
-    private List<Student> getDummyStudents() {
+    private List<Student> fetchStudentsFromDataSource() {
         List<Student> students = new ArrayList<>();
-        students.add(new Student(1, "Попов", "Иван", "Иванович", "https://github.com/ivanov", "ivanov@example.com", "123-456", "@ivanov"));
-        students.add(new Student(2, "Петров", "Петр", "Петрович", "https://github.com/petrov", "petrov@example.com", "987-654", "@petrov"));
-        students.add(new Student(3, "Сидорова", "Анна", "Сергеевна", "", "sid@example.com", "321-654", "@sid"));
-        students.add(new Student(4, "Пономарёв","Максим","Максимович","https://github.com/Killer2016", "pomafyo123@mail.ru", "+79451239009","@pomafyo123"));
-        students.add(new Student(5, "Денисова","Анастасия","Давидовна","https://github.com/Denisochka","","","@denis"));
-        students.add(new Student(6, "Сидорова", "Анна", "Сергеевна", "", "sid@example.com", "321-654", "@sid"));
-        students.add(new Student(7, "Попов","Иван","Викторович","https://github.com/Sc00taloo","iptru@mail.ru","+78005553535","@scooty"));
-        students.add(new Student(8, "Петров", "Петр", "Петрович", "https://github.com/petrov", "petrov@example.com", "987-654", "@petrov"));
-        students.add(new Student(9, "Сидорова", "Анна", "Сергеевна", "", "sid@example.com", "321-654", "@sid"));
-        students.add(new Student(10, "Иванов", "Иван", "Иванович", "https://github.com/ivanov", "ivanov@example.com", "123-456", "@ivanov"));
-        students.add(new Student(11,"Пономарёв","Максим","Максимович","https://github.com/Killer2016", "pomafyo123@mail.ru", "+79451239009","@pomafyo123"));
-        students.add(new Student(12,"Денисова","Анастасия","Давидовна","https://github.com/Denisochka","","","@denis"));
-        students.add(new Student(13, "Денисова","Анастасия","Давидовна","https://github.com/Denisochka","","","@denis"));
-        students.add(new Student(14, "Петров", "Петр", "Петрович", "https://github.com/petrov", "petrov@example.com", "987-654", "@petrov"));
-        students.add(new Student(15, "Попов","Иван","Викторович","https://github.com/Sc00taloo","iptru@mail.ru","+78005553535","@scooty"));
-        students.add(new Student(16, "Денисова","Анастасия","Давидовна","https://github.com/Denisochka","","","@denis"));
-        students.add(new Student(17, "Петров", "Петр", "Петрович", "https://github.com/petrov", "petrov@example.com", "987-654", "@petrov"));
-        students.add(new Student(18, "Сидорова", "Анна", "Сергеевна", "", "sid@example.com", "321-654", "@sid"));
-        students.add(new Student(19, "Иванов", "Иван", "Иванович", "https://github.com/ivanov", "ivanov@example.com", "123-456", "@ivanov"));
-        students.add(new Student(20, "Денисова","Анастасия","Давидовна","https://github.com/Denisochka","","","@denis"));
-        students.add(new Student(21, "Попов","Иван","Викторович","https://github.com/Sc00taloo","iptru@mail.ru","+78005553535","@scooty"));
-        students.add(new Student(22, "Иванов", "Иван", "Иванович", "https://github.com/ivanov", "ivanov@example.com", "123-456", "@ivanov"));
-        students.add(new Student(23, "Петров", "Петр", "Петрович", "https://github.com/petrov", "petrov@example.com", "987-654", "@petrov"));
-        students.add(new Student(24, "Пономарёв","Максим","Максимович","https://github.com/Killer2016", "pomafyo123@mail.ru", "+79451239009","@pomafyo123"));
+        try {
+            Path filePath = Paths.get("students.txt");
+            List<String> lines = Files.readAllLines(filePath);
+            for (String line : lines) {
+                String[] parts = line.split(",");
+                if (parts.length == 8) {
+                    students.add(new Student(
+                            Integer.parseInt(parts[0].trim()),
+                            parts[1].trim(),
+                            parts[2].trim(),
+                            parts[3].trim(),
+                            parts[4].trim(),
+                            parts[5].trim(),
+                            parts[6].trim(),
+                            parts[7].trim()
+                    ));
+                }
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
         return students;
     }
 

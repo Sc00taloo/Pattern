@@ -32,23 +32,27 @@ fun main() {
 //    println("${jsonData.wholeEntitiesCount}")
 
 
-    val dbInstance = Student_list_DB.getInstance()
-    val dbAdapter = Students_List_DB_Adapter(dbInstance)
-    val controller = Student_list_controller(dbAdapter)
+//    val dbInstance = Student_list_DB.getInstance()
+//    val dbAdapter = Students_List_DB_Adapter(dbInstance)
+//    val controller = Student_list_controller(dbAdapter)
+//
+//    val pageSize = 3
+//    val pageNumber = 1
+//
+//    // Try
+//    val result = controller.get_k_n_student_short_list(pageNumber, pageSize)
+//
+//    if (result != null) {
+//        println("Students:")
+//        result.data.forEach {
+//            println("${it.id}: ${it.lastName} ${it.firstName} ${it.middleName}")
+//        }
+//        println("${result.wholeEntitiesCount}")
+//    } else {
+//        println("Sad (")
+//    }
 
-    val pageSize = 3
-    val pageNumber = 1
 
-    // Try
-    val result = controller.get_k_n_student_short_list(pageNumber, pageSize)
-
-    if (result != null) {
-        println("Students:")
-        result.data.forEach {
-            println("${it.id}: ${it.lastName} ${it.firstName} ${it.middleName}")
-        }
-        println("${result.wholeEntitiesCount}")
-    } else {
-        println("Sad (")
-    }
+    val javaWindow = MainWindow()
+    javaWindow.createWindow()
 }
