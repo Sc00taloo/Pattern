@@ -328,22 +328,65 @@ public class MainWindow {
                     .filter(s -> filterByNameAndInitials(s, name))
                     .collect(Collectors.toList());
         }
-        if (!phone.isEmpty() && getSelectedButtonIndex(phoneGroup) == 0) {
+        if (getSelectedButtonIndex(phoneGroup) == 0) {
+            filteredStudents = filteredStudents.stream()
+                    .filter(s -> s.getPhone() != null && !s.getPhone().isEmpty())
+                    .collect(Collectors.toList());
+        }
+        else if (getSelectedButtonIndex(phoneGroup) == 1) {
+            filteredStudents = filteredStudents.stream()
+                    .filter(s -> s.getPhone() == null || s.getPhone().isEmpty())
+                    .collect(Collectors.toList());
+        }
+        else if (!phone.isEmpty() && getSelectedButtonIndex(phoneGroup) == 0) {
             filteredStudents = filteredStudents.stream()
                     .filter(s -> s.getPhone().contains(phone))
                     .collect(Collectors.toList());
         }
-        if (!telegram.isEmpty() && getSelectedButtonIndex(telegramGroup) == 0) {
+
+        if (getSelectedButtonIndex(telegramGroup) == 0) {
+            filteredStudents = filteredStudents.stream()
+                    .filter(s -> s.getTelegram() != null && !s.getTelegram().isEmpty())
+                    .collect(Collectors.toList());
+        }
+        else if (getSelectedButtonIndex(telegramGroup) == 1) {
+            filteredStudents = filteredStudents.stream()
+                    .filter(s -> s.getTelegram() == null || s.getTelegram().isEmpty())
+                    .collect(Collectors.toList());
+        }
+        else if (!telegram.isEmpty() && getSelectedButtonIndex(telegramGroup) == 0) {
             filteredStudents = filteredStudents.stream()
                     .filter(s -> s.getTelegram().contains(telegram))
                     .collect(Collectors.toList());
         }
-        if (!email.isEmpty() && getSelectedButtonIndex(emailGroup) == 0) {
+
+        if (getSelectedButtonIndex(emailGroup) == 0) {
+            filteredStudents = filteredStudents.stream()
+                    .filter(s -> s.getEmail() != null && !s.getEmail().isEmpty())
+                    .collect(Collectors.toList());
+        }
+        else if (getSelectedButtonIndex(emailGroup) == 1) {
+            filteredStudents = filteredStudents.stream()
+                    .filter(s -> s.getEmail() == null || s.getEmail().isEmpty())
+                    .collect(Collectors.toList());
+        }
+        else if (!email.isEmpty() && getSelectedButtonIndex(emailGroup) == 0) {
             filteredStudents = filteredStudents.stream()
                     .filter(s -> s.getEmail().contains(email))
                     .collect(Collectors.toList());
         }
-        if (!git.isEmpty() && getSelectedButtonIndex(gitGroup) == 0) {
+
+        if (getSelectedButtonIndex(gitGroup) == 0) {
+            filteredStudents = filteredStudents.stream()
+                    .filter(s -> s.getGit() != null && !s.getGit().isEmpty())
+                    .collect(Collectors.toList());
+        }
+        else if (getSelectedButtonIndex(gitGroup) == 1) {
+            filteredStudents = filteredStudents.stream()
+                    .filter(s -> s.getGit() == null || s.getGit().isEmpty())
+                    .collect(Collectors.toList());
+        }
+        else if (!git.isEmpty() && getSelectedButtonIndex(gitGroup) == 0) {
             filteredStudents = filteredStudents.stream()
                     .filter(s -> s.getGit().contains(git))
                     .collect(Collectors.toList());
