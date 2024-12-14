@@ -19,7 +19,7 @@ class Students_List_txt_adapter(private val txtInstance: Student_list_txt) : Stu
         val startIndex = (n - 1) * k
         val endIndex = startIndex + k
         val sublist = students.subList(startIndex, endIndex.coerceAtMost(students.size))
-        return Data_list(sublist.map { Student_short(it) })
+        return Data_list(sublist.map { Student_short(it) }, getStudentShortCount())
     }
 
     override fun addStudent(student: Student): Int {

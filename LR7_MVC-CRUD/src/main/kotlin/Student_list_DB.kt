@@ -1,6 +1,7 @@
 import main.src.Student
 import main.src.Student_short
 import java.sql.*
+import Data_list
 
 class Student_list_DB private constructor(private val connection: Connection) {
     companion object {
@@ -60,7 +61,8 @@ class Student_list_DB private constructor(private val connection: Connection) {
                 )
             )
         }
-        return Data_list(studentShortList)
+        val totalStudents = getTotalStudents()
+        return Data_list(studentShortList, totalStudents)
     }
 
     // c. Добавить объект класса Student в таблицу
