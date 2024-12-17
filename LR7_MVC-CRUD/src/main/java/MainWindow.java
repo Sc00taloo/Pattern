@@ -1,4 +1,5 @@
 import main.src.Student_short;
+import main.src.SuperStudent;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -25,6 +26,7 @@ public class MainWindow {
     private JTable studentTable;
     private DefaultTableModel tableModel;
     private final MainWindowController controller = new MainWindowController();
+    private Student_short selectedStudent;
 
     public void createWindow() {
         JFrame frame = new JFrame("Students");
@@ -266,10 +268,32 @@ public class MainWindow {
             }
         });
 
+        studentTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                int[] selectedRows = studentTable.getSelectedRows();
+                if (selectedRows.length == 1) {
+                    // Если выбрана одна строка, активируем кнопку "Обновить"
+                    selectedStudent = getSelectedStudentFromRow(selectedRows[0]); // Получаем выбранного студента по строке
+                    editButton.setEnabled(true);
+
+                    // Обновление метки информации
+                    //studentInfoLabel.setText("Фамилия: " + selectedStudent.getLastName() + " Имя: " + selectedStudent.getFirstName());
+                } else if (selectedRows.length > 1) {
+                    // Несколько строк выделены
+                    editButton.setEnabled(false);
+                    deleteButton.setEnabled(true);
+                } else {
+                    // Никакая строка не выделена
+                    editButton.setEnabled(false);
+                    deleteButton.setEnabled(false);
+                }
+            }
+        });
+
         addButton.addActionListener(e -> {
             CreateStudentController controller = new CreateStudentController(null);
             controller.showDialog();
-
             if (controller.isCreated()) {
                 String[] newStudent = controller.getStudentData();
                 int newId = tableModel.getRowCount() + 1; // Генерация ID для нового студента
@@ -290,9 +314,12 @@ public class MainWindow {
             }
         });
         editButton.addActionListener(e -> {
-            int selectedRow = studentTable.getSelectedRow();
-            if (selectedRow != -1) {
-                System.out.println("Изменить студента с ID: " + tableModel.getValueAt(selectedRow, 0));
+            if (selectedStudent != null) {
+                // Если объект выбранного студента не null, открываем модальное окно
+                UpdateStudentController updateController = new UpdateStudentController(null, selectedStudent);
+                updateController.showDialog();  // Открытие модального окна
+            } else {
+                JOptionPane.showMessageDialog(null, "Пожалуйста, выберите студента для редактирования", "Ошибка", JOptionPane.WARNING_MESSAGE);
             }
         });
         deleteButton.addActionListener(e -> {
@@ -319,6 +346,24 @@ public class MainWindow {
         panel.add(centralPanel, BorderLayout.CENTER);
         panel.add(controlPanel, BorderLayout.SOUTH);
         return panel;
+    }
+
+    private Student_short getSelectedStudentFromRow(int rowIndex) {
+        // Извлекаем данные из выбранной строки таблицы
+        int ID = (int) studentTable.getValueAt(rowIndex, 0);
+        String lastName = (String) studentTable.getValueAt(rowIndex, 1); // Фамилия
+        String firstName = (String) studentTable.getValueAt(rowIndex, 2); // Имя
+        String middleName = (String) studentTable.getValueAt(rowIndex, 3); // Отчество
+        String git = (String) studentTable.getValueAt(rowIndex, 4); // Git
+        String email = (String) studentTable.getValueAt(rowIndex, 5); // Email
+        String phone = (String) studentTable.getValueAt(rowIndex, 6); // Телефон
+        String telegram = (String) studentTable.getValueAt(rowIndex, 7); // Telegram
+
+        // Создаем новый объект Student_short на основе данных из строки таблицы
+        // Предполагаем, что у вас есть конструктор в классе Student_short, который принимает эти значения
+        Student_short student = new Student_short(ID,lastName, firstName, middleName, phone, telegram, email, git);
+
+        return student;
     }
 
     private int getSelectedButtonIndex(ButtonGroup group) {
