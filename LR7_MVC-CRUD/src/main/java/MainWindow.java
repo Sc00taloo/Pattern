@@ -1,3 +1,5 @@
+import main.src.Student_short;
+
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -22,6 +24,7 @@ public class MainWindow {
 
     private JTable studentTable;
     private DefaultTableModel tableModel;
+    private final MainWindowController controller = new MainWindowController();
 
     public void createWindow() {
         JFrame frame = new JFrame("Students");
@@ -48,8 +51,8 @@ public class MainWindow {
             int selectedIndex = tabbedPane.getSelectedIndex();
             if (selectedIndex == 0) { // Если выбрана первая вкладка
                 // Обновляем данные в таблице
-                List<Student> updatedStudents = fetchStudentsFromDataSource();
-                updateTableData(updatedStudents, tableModel);
+                List<Student_short> students = controller.getStudents(PAGE_SIZE, currentPage);
+                updateTableData(students, tableModel);
             }
         });
 
@@ -181,7 +184,7 @@ public class MainWindow {
         gitAny.addActionListener(e -> gitField.setEnabled(false));
 
         // Таблица
-        String[] columnNames = {"ID", "Фамилия", "Имя", "Отчество", "Телефон", "Telegram", "Email", "Git"};
+        String[] columnNames = {"ID", "Фамилия", "Имя", "Отчество", "Git", "Email", "Телефон", "Telegram"};
         tableModel = new DefaultTableModel(columnNames, 0);
         studentTable = new JTable(tableModel);
         // Запрет на редактирование таблицы
@@ -198,7 +201,7 @@ public class MainWindow {
         });
         JScrollPane tableScrollPane = new JScrollPane(studentTable);
         // Добавление тестовые хардкодинговых данные
-        List<Student> students = fetchStudentsFromDataSource();
+        List<Student_short> students = fetchStudentsFromDataSource();
         totalRecords = students.size();
         updateTableData(students, tableModel);
 
@@ -207,9 +210,11 @@ public class MainWindow {
         JButton prevButton = new JButton("Предыдущая");
         JButton nextButton = new JButton("Следующая");
         JLabel pageLabel = new JLabel("Страница: " + currentPage + " из " + getTotalPages());
+
         prevButton.addActionListener(e -> {
             if (currentPage > 1) {
                 currentPage--;
+                controller.getStudents(PAGE_SIZE, currentPage); // Обновляем данные для текущей страницы
                 updateTableData(students, tableModel);
                 pageLabel.setText("Страница: " + currentPage + " из " + getTotalPages());
             }
@@ -217,6 +222,7 @@ public class MainWindow {
         nextButton.addActionListener(e -> {
             if (currentPage < getTotalPages()) {
                 currentPage++;
+                controller.getStudents(PAGE_SIZE, currentPage); // Обновляем данные для следующей страницы
                 updateTableData(students, tableModel);
                 pageLabel.setText("Страница: " + currentPage + " из " + getTotalPages());
             }
@@ -261,7 +267,27 @@ public class MainWindow {
         });
 
         addButton.addActionListener(e -> {
-            System.out.println("Добавить студента");
+            CreateStudentController controller = new CreateStudentController(null);
+            controller.showDialog();
+
+            if (controller.isCreated()) {
+                String[] newStudent = controller.getStudentData();
+                int newId = tableModel.getRowCount() + 1; // Генерация ID для нового студента
+                tableModel.addRow(new Object[]{
+                        newId,
+                        newStudent[0], // Фамилия
+                        newStudent[1], // Имя
+                        newStudent[2], // Отчество
+                        newStudent[3], // Git
+                        newStudent[4], // Email
+                        newStudent[5], // Телефон
+                        newStudent[6]  // Telegram
+                });
+                JOptionPane.showMessageDialog(null,
+                        "Студент успешно добавлен!",
+                        "Успех",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
         });
         editButton.addActionListener(e -> {
             int selectedRow = studentTable.getSelectedRow();
@@ -271,15 +297,14 @@ public class MainWindow {
         });
         deleteButton.addActionListener(e -> {
             int[] selectedRows = studentTable.getSelectedRows();
-            if (selectedRows.length > 0) {
-                System.out.println("Удалить студентов: ");
-                for (int row : selectedRows) {
-                    System.out.println("ID: " + tableModel.getValueAt(row, 0));
-                }
+            for (int row : selectedRows) {
+                int studentId = (int) tableModel.getValueAt(row, 0);
+                controller.deleteStudent(studentId);
             }
+            refreshTable();
         });
         refreshButton.addActionListener(e -> {
-            List<Student> filteredStudents = applyFilters(nameField.getText(), phoneField.getText(), telegramField.getText(), emailField.getText(), gitField.getText(),
+            List<Student_short> filteredStudents = applyFilters(nameField.getText(), phoneField.getText(), telegramField.getText(), emailField.getText(), gitField.getText(),
                     phoneGroup, telegramGroup, emailGroup, gitGroup);
             updateStudent(filteredStudents, tableModel);
         });
@@ -307,7 +332,7 @@ public class MainWindow {
         return -1;
     }
 
-    private boolean filterByNameAndInitials(Student student, String nameInput) {
+    private boolean filterByNameAndInitials(Student_short student, String nameInput) {
         String[] parts = nameInput.trim().split("\\s+");
         String lastName = parts[0];
 
@@ -333,9 +358,9 @@ public class MainWindow {
         return false;
     }
 
-    private List<Student> applyFilters(String name, String phone, String telegram, String email, String git,
+    private List<Student_short> applyFilters(String name, String phone, String telegram, String email, String git,
                                        ButtonGroup phoneGroup, ButtonGroup telegramGroup, ButtonGroup emailGroup, ButtonGroup gitGroup) {
-        List<Student> filteredStudents = fetchStudentsFromDataSource();
+        List<Student_short> filteredStudents = fetchStudentsFromDataSource();
         if (!name.isEmpty()) {
             filteredStudents = filteredStudents.stream()
                     .filter(s -> filterByNameAndInitials(s, name))
@@ -364,12 +389,17 @@ public class MainWindow {
         return filteredStudents;
     }
 
-    private void updateTableData(List<Student> students, DefaultTableModel tableModel) {
+    private void updateTableData(List<Student_short> students, DefaultTableModel tableModel) {
+        // Очищаем таблицу перед обновлением
         tableModel.setRowCount(0);
-        int statrIndex = (currentPage - 1) * PAGE_SIZE;
+
+        // Вычисляем индексы для текущей страницы
+        int startIndex = (currentPage - 1) * PAGE_SIZE;
         int endIndex = Math.min(currentPage * PAGE_SIZE, totalRecords);
-        for (int i = statrIndex; i < endIndex; i++) {
-            Student student = students.get(i);
+
+        // Добавляем данные для текущей страницы
+        for (int i = startIndex; i < endIndex; i++) {
+            Student_short student = students.get(i);
             tableModel.addRow(new Object[]{
                     student.getId(),
                     student.getLastName(),
@@ -383,11 +413,11 @@ public class MainWindow {
         }
     }
 
-    private void updateStudent(List<Student> students, DefaultTableModel tableModel) {
+    private void updateStudent(List<Student_short> students, DefaultTableModel tableModel) {
         tableModel.setRowCount(0);
         int endIndex = Math.min(currentPage * PAGE_SIZE, totalRecords);
         for (int i = 0; i < endIndex; i++) {
-            Student student = students.get(i);
+            Student_short student = students.get(i);
             tableModel.addRow(new Object[]{
                     student.getId(),
                     student.getLastName(),
@@ -406,28 +436,15 @@ public class MainWindow {
         return (int) Math.ceil((double) totalRecords / PAGE_SIZE);
     }
 
-    private List<Student> fetchStudentsFromDataSource() {
-        List<Student> students = new ArrayList<>();
+    private List<Student_short> fetchStudentsFromDataSource() {
+        List<Student_short> students = new ArrayList<>();
+        // Kotlin метод вызова get_k_n_student_short_list
         try {
-            Path filePath = Paths.get("students.txt");
-            List<String> lines = Files.readAllLines(filePath);
-            for (String line : lines) {
-                String[] parts = line.split(",");
-                if (parts.length == 8) {
-                    students.add(new Student(
-                            Integer.parseInt(parts[0].trim()),
-                            parts[1].trim(),
-                            parts[2].trim(),
-                            parts[3].trim(),
-                            parts[4].trim(),
-                            parts[5].trim(),
-                            parts[6].trim(),
-                            parts[7].trim()
-                    ));
-                }
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
+            Student_list_DB dbInstance = Student_list_DB.Companion.getInstance();
+            List<Student_short> fetched = dbInstance.get_k_n_student_short_list(50, currentPage).getList();
+            students.addAll(fetched);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return students;
     }
@@ -437,7 +454,7 @@ public class MainWindow {
         DefaultTableModel model = (DefaultTableModel) studentTable.getModel();
         int rowCount = model.getRowCount();
 
-        List<Student> sortedStudents = new ArrayList<>();
+        List<Student_short> sortedStudents = new ArrayList<>();
         for (int i = 0; i < rowCount; i++) {
             int id = (int) model.getValueAt(i, 0);
             String lastName = (String) model.getValueAt(i, 1);
@@ -448,56 +465,16 @@ public class MainWindow {
             String phone = (String) model.getValueAt(i, 6);
             String telegram = (String) model.getValueAt(i, 7);
 
-            sortedStudents.add(new Student(id, lastName, firstName, middleName, git, email, phone, telegram));
+            sortedStudents.add(new Student_short(id, lastName, firstName, middleName, git, email, phone, telegram));
         }
         // Сортируем студентов по Фамилии
-        sortedStudents.sort(Comparator.comparing(Student::getLastName));
+        sortedStudents.sort(Comparator.comparing(Student_short::getLastName));
         updateStudent(sortedStudents, tableModel);
     }
 
-    static class Student {
-        private final int id;
-        private final String lastName;
-        private final String firstName;
-        private final String middleName;
-        private final String git;
-        private final String email;
-        private final String phone;
-        private final String telegram;
-
-        public Student(int id, String lastName, String firstName, String middleName, String git, String email, String phone, String telegram) {
-            this.id = id;
-            this.lastName = lastName;
-            this.firstName = firstName;
-            this.middleName = middleName;
-            this.git = git;
-            this.email = email;
-            this.phone = phone;
-            this.telegram = telegram;
-        }
-        public int getId() {
-            return id;
-        }
-        public String getLastName() {
-            return lastName;
-        }
-        public String getFirstName() {
-            return firstName;
-        }
-        public String getMiddleName() {
-            return middleName;
-        }
-        public String getGit() {
-            return git;
-        }
-        public String getEmail() {
-            return email;
-        }
-        public String getPhone() {
-            return phone;
-        }
-        public String getTelegram() {
-            return telegram;
-        }
+    private void refreshTable() {
+        List<Student_short> students = controller.getStudents(PAGE_SIZE, currentPage);
+        totalRecords = students.size(); // или из источника данных
+        updateTableData(students, tableModel);
     }
 }

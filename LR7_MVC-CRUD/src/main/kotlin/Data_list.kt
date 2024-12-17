@@ -34,4 +34,8 @@ open class Data_list<T>(val data: List<T> = mutableListOf(), val wholeEntitiesCo
         observer?.set_table_params(columnNames, wholeEntitiesCount)
         observer?.set_table_data(convertedTable)
     }
+
+    fun getList(): List<T> {
+        return data
+    }
 }

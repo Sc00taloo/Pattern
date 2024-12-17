@@ -19,7 +19,9 @@ dependencies {
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.2")
     implementation("org.postgresql:postgresql:42.7.2")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
+    testImplementation("org.jetbrains.kotlin:kotlin-test")
     implementation(kotlin("stdlib"))
+    implementation("org.jetbrains.kotlin:kotlin-reflect:2.0.20")
 }
 
 tasks.test {

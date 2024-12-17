@@ -11,7 +11,7 @@ class Student_short(
     git: String? = null
 ):SuperStudent(id, lastName, firstName, middleName, phone, telegram, email, git) {
     // Конструктор, принимающий объект класса Student
-    constructor(student: Student) : this(
+    constructor(student: Student_short) : this(
         id = student.id,
         lastName = student.lastName,
         firstName = student.firstName,

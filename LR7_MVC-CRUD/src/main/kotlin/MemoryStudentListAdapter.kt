@@ -1,10 +1,9 @@
-import main.src.Student
 import main.src.Student_short
 
 class MemoryStudentListAdapter : Student_List_Adapter {
-    private val students = mutableListOf<Student>()
+    private val students = mutableListOf<Student_short>()
 
-    override fun getStudentById(id: Int): Student? {
+    override fun getStudentById(id: Int): Student_short? {
         return students.find { it.id == id }
     }
 
@@ -15,12 +14,12 @@ class MemoryStudentListAdapter : Student_List_Adapter {
         return Data_list_student_short(studentShortList, students.size)
     }
 
-    override fun addStudent(student: Student): Int {
+    override fun addStudent(student: Student_short): Int {
         students.add(student)
         return student.id
     }
 
-    override fun replaceStudentById(id: Int, newStudent: Student) {
+    override fun replaceStudentById(id: Int, newStudent: Student_short) {
         val index = students.indexOfFirst { it.id == id }
         if (index != -1) {
             students[index] = newStudent
