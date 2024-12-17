@@ -12,19 +12,18 @@ public class MainWindowController {
     }
 
     // Метод для получения студентов с поддержкой пагинации
-    public List<Student_short> getStudents(int pageSize, int currentPage) {
-        List<Student_short> students = fetchStudentsFromDataSource();
-        // Вычисляем индексы для страницы
-        int startIndex = (currentPage - 1) * pageSize;
-        int endIndex = Math.min(currentPage * pageSize, students.size());
-
-        // Возвращаем только студентов для текущей страницы
-        return students.subList(startIndex, endIndex);
+    public List<Student_short> getStudents(int pageSize, int page) {
+        try {
+            Student_list_DB dbInstance = Student_list_DB.Companion.getInstance();
+            return dbInstance.get_k_n_student_short_list(pageSize, page).getList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>(); // Возвращаем пустой список при ошибке
+        }
     }
 
     private List<Student_short> fetchStudentsFromDataSource() {
         List<Student_short> students = new ArrayList<>();
-        // Kotlin метод вызова get_k_n_student_short_list
         try {
             Student_list_DB dbInstance = Student_list_DB.Companion.getInstance();
             List<Student_short> fetched = dbInstance.get_k_n_student_short_list(50, 1).getList();
@@ -35,23 +34,22 @@ public class MainWindowController {
         return students;
     }
 
-    // Метод для добавления нового студента
-    public void addStudent(Student_short student) {
-        try {
-            database.addStudent(student); // Метод для добавления студента в базу данных
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
-    // Метод для обновления информации о студенте
-    public void updateStudent(Student_short student) {
-        try {
-            database.updateStudent(1,student); // Метод для обновления студента в базе данных
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    public void addStudent(Student_short student) {
+//        try {
+//            database.addStudent(student); // Метод для добавления студента в базу данных
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    public void updateStudent(Student_short student) {
+//        try {
+//            database.updateStudent(1,student); // Метод для обновления студента в базе данных
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     // Метод для удаления студента по его ID
     public void deleteStudent(int studentId) {
@@ -62,13 +60,12 @@ public class MainWindowController {
         }
     }
 
-    // Метод для получения общего количества студентов
-    public int getTotalRecords() {
-        try {
-            return database.getTotalStudents();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
+//    public int getTotalRecords() {
+//        try {
+//            return database.getTotalStudents();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return 0;
+//        }
+//    }
 }

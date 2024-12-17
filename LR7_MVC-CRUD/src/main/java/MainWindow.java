@@ -216,22 +216,25 @@ public class MainWindow {
         prevButton.addActionListener(e -> {
             if (currentPage > 1) {
                 currentPage--;
-                controller.getStudents(PAGE_SIZE, currentPage); // Обновляем данные для текущей страницы
-                updateTableData(students, tableModel);
+                List<Student_short> st = controller.getStudents(PAGE_SIZE, currentPage); // Загружаем данные для текущей страницы
+                updateTableData(st, tableModel);
                 pageLabel.setText("Страница: " + currentPage + " из " + getTotalPages());
             }
         });
         nextButton.addActionListener(e -> {
             if (currentPage < getTotalPages()) {
                 currentPage++;
-                controller.getStudents(PAGE_SIZE, currentPage); // Обновляем данные для следующей страницы
-                updateTableData(students, tableModel);
+                List<Student_short> st = controller.getStudents(PAGE_SIZE, currentPage); // Загружаем данные для следующей страницы
+                updateTableData(st, tableModel);
                 pageLabel.setText("Страница: " + currentPage + " из " + getTotalPages());
             }
         });
         paginationPanel.add(prevButton);
         paginationPanel.add(pageLabel);
         paginationPanel.add(nextButton);
+
+        List<Student_short> studen = controller.getStudents(PAGE_SIZE, currentPage);
+        updateTableData(studen, tableModel);
 
         // Область управления
         JPanel controlPanel = new JPanel();
@@ -312,6 +315,7 @@ public class MainWindow {
                         "Успех",
                         JOptionPane.INFORMATION_MESSAGE);
             }
+            refreshTable();
         });
         editButton.addActionListener(e -> {
             if (selectedStudent != null) {
@@ -321,19 +325,26 @@ public class MainWindow {
             } else {
                 JOptionPane.showMessageDialog(null, "Пожалуйста, выберите студента для редактирования", "Ошибка", JOptionPane.WARNING_MESSAGE);
             }
+            refreshTable();
         });
         deleteButton.addActionListener(e -> {
             int[] selectedRows = studentTable.getSelectedRows();
             for (int row : selectedRows) {
                 int studentId = (int) tableModel.getValueAt(row, 0);
-                controller.deleteStudent(studentId);
+                controller.deleteStudent(studentId); // Вызов метода контроллера
             }
-            refreshTable();
+            List<Student_short> saf = fetchStudentsFromDataSource();
+            totalRecords = saf.size();
+            currentPage = Math.min(currentPage, getTotalPages()); // Обновляем текущую страницу
+            updateTableData(saf, tableModel);
+            refreshTable(); // Обновляем таблицу после удаления
         });
         refreshButton.addActionListener(e -> {
-            List<Student_short> filteredStudents = applyFilters(nameField.getText(), phoneField.getText(), telegramField.getText(), emailField.getText(), gitField.getText(),
-                    phoneGroup, telegramGroup, emailGroup, gitGroup);
-            updateStudent(filteredStudents, tableModel);
+            List<Student_short> af = fetchStudentsFromDataSource();
+            totalRecords = af.size(); // Обновляем общее количество записей
+            currentPage = 1; // Возвращаемся на первую страницу
+            updateTableData(af, tableModel);
+            //JOptionPane.showMessageDialog(null, "Таблица обновлена!", "Обновление", JOptionPane.INFORMATION_MESSAGE);
         });
 
 
@@ -435,34 +446,9 @@ public class MainWindow {
     }
 
     private void updateTableData(List<Student_short> students, DefaultTableModel tableModel) {
-        // Очищаем таблицу перед обновлением
-        tableModel.setRowCount(0);
+        tableModel.setRowCount(0); // Очистка таблицы
 
-        // Вычисляем индексы для текущей страницы
-        int startIndex = (currentPage - 1) * PAGE_SIZE;
-        int endIndex = Math.min(currentPage * PAGE_SIZE, totalRecords);
-
-        // Добавляем данные для текущей страницы
-        for (int i = startIndex; i < endIndex; i++) {
-            Student_short student = students.get(i);
-            tableModel.addRow(new Object[]{
-                    student.getId(),
-                    student.getLastName(),
-                    student.getFirstName(),
-                    student.getMiddleName(),
-                    student.getGit(),
-                    student.getEmail(),
-                    student.getPhone(),
-                    student.getTelegram()
-            });
-        }
-    }
-
-    private void updateStudent(List<Student_short> students, DefaultTableModel tableModel) {
-        tableModel.setRowCount(0);
-        int endIndex = Math.min(currentPage * PAGE_SIZE, totalRecords);
-        for (int i = 0; i < endIndex; i++) {
-            Student_short student = students.get(i);
+        for (Student_short student : students) {
             tableModel.addRow(new Object[]{
                     student.getId(),
                     student.getLastName(),
@@ -514,7 +500,7 @@ public class MainWindow {
         }
         // Сортируем студентов по Фамилии
         sortedStudents.sort(Comparator.comparing(Student_short::getLastName));
-        updateStudent(sortedStudents, tableModel);
+        updateTableData(sortedStudents, tableModel);
     }
 
     private void refreshTable() {
