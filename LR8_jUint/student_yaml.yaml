@@ -1,32 +1,46 @@
+---
 - id: 1
-  lastName: Попов
-  firstName: Иван
-  middleName: Викторович
+  lastName: "Попов"
+  firstName: "Иван"
+  middleName: "Викторович"
   phone: "+78005553535"
-  telegram: '@scooty'
-  email: iptru@mail.ru
-  git: https://github.com/Sc00taloo
+  telegram: "@scooty"
+  email: "iptru@mail.ru"
+  git: "https://github.com/Sc00taloo"
+  info: "Инициаллы:Попов И.В.; Git:https://github.com/Sc00taloo; Контакт:Telegram_@scooty"
 - id: 2
-  lastName: Николай
-  firstName: Палыч
-  middleName: Победоносный
+  lastName: "Николай"
+  firstName: "Палыч"
+  middleName: "Победоносный"
   phone: "+79214326586"
-  telegram: '@nikitochka'
-  email: sobaka12@gmail.com
-  git: https://github.com/SlivkiShow
+  telegram: "@nikitochka"
+  email: "sobaka12@gmail.com"
+  git: "https://github.com/SlivkiShow"
+  info: "Инициаллы:Николай П.П.; Git:https://github.com/SlivkiShow; Контакт:Telegram_@nikitochka"
 - id: 3
-  lastName: Денисова
-  firstName: Анастасия
-  middleName: Давидовна
-  phone: ''
-  telegram: '@denis'
-  email: ''
-  git: https://github.com/Denisochka
-- id: 4
-  lastName: Пономарёв
-  firstName: Максим
-  middleName: Максимович
-  phone: "+79451239009"
-  telegram: '@pomafyo123'
-  email: pomafyo123@mail.ru
-  git: https://github.com/Killer2016
+  lastName: "Обновлённая"
+  firstName: "Анастасия"
+  middleName: "Игоревна"
+  phone: "+79990000000"
+  telegram: "@update"
+  email: "update@mail.ru"
+  git: "https://github.com/updated"
+  info: "Инициаллы:Обновлённая А.И.; Git:https://github.com/updated; Контакт:Telegram_@update"
+- id: 5
+  lastName: "Тестов"
+  firstName: "Николай"
+  middleName: "Петрович"
+  phone: "+79991234567"
+  telegram: "@test"
+  email: "test@mail.ru"
+  git: "https://github.com/test"
+  info: "Инициаллы:Тестов Н.П.; Git:https://github.com/test; Контакт:Telegram_@test"
+- id: 6
+  lastName: "Тестов"
+  firstName: "Николай"
+  middleName: "Петрович"
+  phone: "+79991234567"
+  telegram: "@test"
+  email: "test@mail.ru"
+  git: "https://github.com/test"
+  info: "Инициаллы:Тестов Н.П.; Git:https://github.com/test; Контакт:Telegram_@test"

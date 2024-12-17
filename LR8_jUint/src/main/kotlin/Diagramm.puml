@@ -1,0 +1,201 @@
+@startuml
+class SuperStudent {
+    - id: Int
+    - lastName: String
+    - firstName: String
+    - middleName: String
+    - phone: String?
+    - telegram: String?
+    - email: String?
+    - git: String?
+
+    + validate(): Boolean
+    + hasGit(): Boolean
+    + hasContact(): Boolean
+    + getInfo(): String
+    + toString(): String
+}
+
+class Student {
+    + set_contacts(phone: String?, telegram: String?, email: String?, git: String?)
+    + constructor(studentString: String)
+    + toString(): String
+}
+
+class Student_short {
+    id: integer
+    git: String
+    contact: String
+    + toString(): String
+    + constructor(student: Student)
+    + constructor(id: Int, studentString: String)
+}
+
+class Data_list<T> {
+    - data: List<T>
+    - selectedIndices: MutableSet<Int>
+--
+    + select(number: Int): Unit
+    + get_selected(): List<Int>
+    + get_names(): List<List<Any>>
+    + get_data(): List<List<Any>>
+}
+
+class Data_list_student_short {
+    + students: List<Student_short>
+    + get_names(): List<List<Any>>
+    + get_data(): List<List<Any>>
+}
+
+class Data_table<T> {
+    - data: Array<Array<T>>
+--
+    + getRowCount(): Int
+    + getColumnCount(): Int
+    + getValue(row: Int, column: Int): T
+    + displayTable(): Unit
+}
+
+class Examination {
+    + students: MutableList<Student>
+    + isValidPhone(phone: String): Boolean
+    + isValidTelegram(telegram: String): Boolean
+    + isValidEmail(email: String): Boolean
+    + isValidGit(git: String): Boolean
+    + isValidFirstName(firstName: String): Boolean
+    + isValidLastName(lastName: String): Boolean
+    + isValidMiddleName(middleName: String): Boolean
+    + read_from_txt(filePath: String): List<SuperStudent>
+    + write_to_txt(filePath: String, students: List<Student>)
+    + getStudent(): List<Student>
+    + read_from_txt(filePath: String): List<SuperStudent>
+    + write_to_txt(filePath: String, students: List<Student>)
+}
+
+class StudentList{
+students:MutableList<Student>
+--
+-initialize(file)
++readStudents(filePath: String)
++writeStudents(filePath: String)
++getStudentById(id: Int):Student
++get_k_n_student_short_list(n: Int, k: Int): Data_list<Student_short>
++sortStudents()
++addStudent(student: Student)
++replaceStudentById(id: Int, newStudent: Student)
++removeStudentById(id: Int)
++getStudentShortCount(): Int
++getStudents(): List<Student>
+}
+
+interface StudentListInterface {
+#readFromFile(filePath: String): List<Student>
+#writeToFile(filePath: String, students: List<Student>)
+    +getStudentById(id: Int): Student?
+    +get_k_n_student_short_list(k: Int, n: Int): Data_list<Student_short>
+    +addStudent(student: Student)
+    +updateStudent(id: Int, student: Student)
+    +deleteStudent(id: Int)
+    +getStudentShortCount(): Int
+}
+
+class Student_list_txt{
+--
+-readFromFile(filePath: String): List<Student>
+-writeToFile(filePath: String, students: List<Student>)
+}
+
+class Student_list_JSON{
+--
+-readFromFile(filePath: String): List<Student>
+-writeToFile(filePath: String, students: List<Student>)
+}
+
+class Student_list_YAML{
+--
+-readFromFile(filePath: String): List<Student>
+-writeToFile(filePath: String, students: List<Student>)
+}
+
+class Student_list_DB {
+    - connection: Connection
+    - instance: Student_list_DB?
+    + getInstance(): Student_list_DB
+    + getStudentById(id: Int): Student?
+    + get_k_n_student_short_list(k: Int, n: Int): Data_list<Student_short>
+    + addStudent(student: Student)
+    + updateStudent(id: Int, student: Student)
+    + deleteStudent(id: Int)
+    + getTotalStudents(): Int
+}
+
+abstract class Student_list_DB_Adapter {
+    +getStudentById(id: Int): Student?
+    +get_k_n_student_short_list(k: Int, n: Int): Data_list<Student_short>
+    +addStudent(student: Student)
+    +updateStudent(id: Int, student: Student)
+    +deleteStudent(id: Int)
+    +getStudentShortCount(): Int
+}
+
+' Класс Student_list_json_adapter
+class Student_list_json_adapter {
+    +students: MutableList<Student>
+    +readFromFile(filePath: String): List<Student>
+    +writeToFile(filePath: String)
+}
+
+' Класс Student_list_txt_adapter
+class Student_list_txt_adapter {
+    +students: MutableList<Student>
+    +loadStudents()
+    +saveStudents()
+}
+
+' Класс Student_list_yaml_adapter
+class Student_list_yaml_adapter {
+    +students: MutableList<Student>
+    +readFromFile(filePath: String): List<Student>
+    +writeToFile(filePath: String, students: List<Student>)
+}
+
+' Класс Student_list_DB
+class Student_list_DB {
+    +getStudentById(id: Int): Student?
+    +get_k_n_student_short_list(k: Int, n: Int): Data_list<Student_short>
+    +addStudent(student: Student)
+    +updateStudent(id: Int, student: Student)
+    +deleteStudent(id: Int)
+    +getTotalStudents(): Int
+}
+
+' Связь интерфейса и классов-адаптеров
+Student_list_json_adapter -|> StudentListInterface
+Student_list_txt_adapter -|> StudentListInterface
+Student_list_yaml_adapter -|> StudentListInterface
+Student_list_DB_Adapter -|> StudentListInterface
+
+' Связь классов адаптеров с их источниками
+Student_list_json_adapter --> Student_list_JSON
+Student_list_txt_adapter --> Student_list_txt
+Student_list_yaml_adapter --> Student_list_YAML
+
+' Связь адаптера для базы данных с классом базы данных
+Student_list_DB_Adapter --> Student_list_DB
+
+Student_list_DB --> SuperStudent
+Data_list --> Student_short
+Data_list --> Student
+SuperStudent ..>Data_list
+SuperStudent ..>Data_table
+Student -down-> Examination : <<companion object>>
+SuperStudent ..> Student
+SuperStudent ..> Student_short
+Data_list ^-- Data_list_student_short
+Data_list_student_short o--Student_short
+Data_list ..>Data_table
+StudentListInterface ^--Student_list_YAML
+StudentListInterface ^--Student_list_txt
+StudentListInterface ^--Student_list_JSON
+StudentListInterface --* StudentList
+@enduml

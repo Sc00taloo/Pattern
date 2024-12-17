@@ -1,7 +1,9 @@
 package main.src
 
 import kotlinx.serialization.Serializable
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Serializable
 data class Student(
     var id: Int,

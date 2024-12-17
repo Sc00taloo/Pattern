@@ -30,9 +30,9 @@ public class CreateStudentController {
         return studentData;
     }
 
-    public void adddStudent(Student_short student) {
-        studentListDB.addStudent(student);
-    }
+//    public void adddStudent(Student_short student) {
+//        studentListDB.addStudent(student);
+//    }
 
     public void handleCreateButton() {
         if (validateFields()) {

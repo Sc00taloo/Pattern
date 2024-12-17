@@ -14,8 +14,9 @@ public class MainWindowController {
     // Метод для получения студентов с поддержкой пагинации
     public List<Student_short> getStudents(int pageSize, int page) {
         try {
-            Student_list_DB dbInstance = Student_list_DB.Companion.getInstance();
-            return dbInstance.get_k_n_student_short_list(pageSize, page).getList();
+//            Student_list_DB dbInstance = Student_list_DB.Companion.getInstance();
+//            return dbInstance.get_k_n_student_short_list(pageSize, page).getList();
+            return null;
         } catch (Exception e) {
             e.printStackTrace();
             return new ArrayList<>(); // Возвращаем пустой список при ошибке
@@ -25,9 +26,9 @@ public class MainWindowController {
     private List<Student_short> fetchStudentsFromDataSource() {
         List<Student_short> students = new ArrayList<>();
         try {
-            Student_list_DB dbInstance = Student_list_DB.Companion.getInstance();
-            List<Student_short> fetched = dbInstance.get_k_n_student_short_list(50, 1).getList();
-            students.addAll(fetched);
+//            Student_list_DB dbInstance = Student_list_DB.Companion.getInstance();
+//            List<Student_short> fetched = dbInstance.get_k_n_student_short_list(50, 1).getList();
+//            students.addAll(fetched);
         } catch (Exception e) {
             e.printStackTrace();
         }

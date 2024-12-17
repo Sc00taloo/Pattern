@@ -2,7 +2,7 @@ import main.src.Student
 import main.src.Student_short
 
 class Students_List_DB_Adapter(private val dbInstance: Student_list_DB) : Student_List_Adapter {
-    override fun getStudentById(id: Int): Student_short? {
+    override fun getStudentById(id: Int): Student? {
         return dbInstance.getStudentById(id)
     }
 
@@ -10,12 +10,12 @@ class Students_List_DB_Adapter(private val dbInstance: Student_list_DB) : Studen
         return dbInstance.get_k_n_student_short_list(n, k)
     }
 
-    override fun addStudent(student: Student_short): Int {
+    override fun addStudent(student: Student): Int {
         dbInstance.addStudent(student)
-        return dbInstance.getTotalStudents() // Возвращаем новое количество студентов
+        return dbInstance.getTotalStudents()
     }
 
-    override fun replaceStudentById(id: Int, newStudent: Student_short) {
+    override fun replaceStudentById(id: Int, newStudent: Student) {
         dbInstance.updateStudent(id, newStudent)
     }
 

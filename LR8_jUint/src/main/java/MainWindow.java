@@ -471,9 +471,9 @@ public class MainWindow {
         List<Student_short> students = new ArrayList<>();
         // Kotlin метод вызова get_k_n_student_short_list
         try {
-            Student_list_DB dbInstance = Student_list_DB.Companion.getInstance();
-            List<Student_short> fetched = dbInstance.get_k_n_student_short_list(50, currentPage).getList();
-            students.addAll(fetched);
+//            Student_list_DB dbInstance = Student_list_DB.Companion.getInstance();
+//            List<Student_short> fetched = dbInstance.get_k_n_student_short_list(50, currentPage).getList();
+//            students.addAll(fetched);
         } catch (Exception e) {
             e.printStackTrace();
         }

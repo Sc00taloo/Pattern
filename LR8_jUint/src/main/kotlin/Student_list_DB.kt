@@ -1,9 +1,8 @@
 import main.src.Student
 import main.src.Student_short
 import java.sql.*
-import Data_list
 
-class Student_list_DB public constructor(private val connection: Connection) {
+class Student_list_DB private constructor(private val connection: Connection) {
     companion object {
         private var instance: Student_list_DB? = null
 
@@ -17,14 +16,14 @@ class Student_list_DB public constructor(private val connection: Connection) {
     }
 
     // a. Получить объект класса Student по ID
-    fun getStudentById(id: Int): Student_short? {
+    fun getStudentById(id: Int): Student? {
         val sql = "SELECT * FROM student WHERE id = ?"
         val statement = connection.prepareStatement(sql)
         statement.setInt(1, id)
         val resultSet = statement.executeQuery()
 
         return if (resultSet.next()) {
-            Student_short(
+            Student(
                 id = resultSet.getInt("id"),
                 lastName = resultSet.getString("lastname"),
                 firstName = resultSet.getString("firstname"),
@@ -61,12 +60,11 @@ class Student_list_DB public constructor(private val connection: Connection) {
                 )
             )
         }
-        val totalStudents = getTotalStudents()
-        return Data_list(studentShortList, totalStudents)
+        return Data_list(studentShortList)
     }
 
     // c. Добавить объект класса Student в таблицу
-    fun addStudent(student: Student_short) {
+    fun addStudent(student: Student) {
         val sql = "INSERT INTO student (lastname, firstname, middlename, phone, telegram, email, git) VALUES (?, ?, ?, ?, ?, ?, ?)"
         val statement = connection.prepareStatement(sql)
         statement.setString(1, student.lastName)
@@ -80,7 +78,7 @@ class Student_list_DB public constructor(private val connection: Connection) {
     }
 
     // d. Заменить элемент по ID
-    fun updateStudent(id: Int, student: Student_short) {
+    fun updateStudent(id: Int, student: Student) {
         val sql = "UPDATE student SET lastname = ?, firstname = ?, middlename = ?, phone = ?, telegram = ?, email = ?, git = ? WHERE id = ?"
         val statement = connection.prepareStatement(sql)
         statement.setString(1, student.lastName)

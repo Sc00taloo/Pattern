@@ -2,7 +2,7 @@ import main.src.Student
 import main.src.Student_short
 
 class StudentList(private val adapter: Student_List_Adapter) {
-    fun getStudentById(id: Int): Student_short? {
+    fun getStudentById(id: Int): Student? {
         return adapter.getStudentById(id)
     }
 
@@ -10,11 +10,11 @@ class StudentList(private val adapter: Student_List_Adapter) {
         return adapter.get_k_n_student_short_list(n, k)
     }
 
-    fun addStudent(student: Student_short): Int {
+    fun addStudent(student: Student): Int {
         return adapter.addStudent(student)
     }
 
-    fun replaceStudentById(id: Int, newStudent: Student_short) {
+    fun replaceStudentById(id: Int, newStudent: Student) {
         adapter.replaceStudentById(id, newStudent)
     }
 

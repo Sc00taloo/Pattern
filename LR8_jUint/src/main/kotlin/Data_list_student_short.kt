@@ -1,20 +1,6 @@
 import main.src.Student_short
 
-class Data_list_student_short(students: List<Student_short>, wholeEntitiesCount: Int) :
-    Data_list<Student_short>(students, wholeEntitiesCount) {
-    private var observer: Student_list_view? = null
-
-    // Установка наблюдателя
-    override fun setObserver(observer: Student_list_view) {
-        this.observer = observer
-    }
-
-    override fun notify(columnNames: Array<String>, dataTable: List<List<Any>>) {
-        val convertedTable = dataTable.map { it.toTypedArray() }
-        observer?.set_table_params(columnNames, wholeEntitiesCount)
-        observer?.set_table_data(convertedTable)
-    }
-
+class Data_list_student_short(students: List<Student_short>) : Data_list<Student_short>(students) {
     override fun get_names(): List<String> {
         return listOf("№","Инициалы ФИО","Гит","Контакт")
     }

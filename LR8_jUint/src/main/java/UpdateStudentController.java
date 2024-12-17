@@ -41,7 +41,7 @@ public class UpdateStudentController {
             currentStudent.setGit(dialog.getGitHubField().getText().trim());
 
             // Обновляем студента в базе данных
-            studentListDB.updateStudent(currentStudent.getId(),currentStudent);
+            //studentListDB.updateStudent(currentStudent.getId(),currentStudent);
 
             dialog.dispose();
         } else {

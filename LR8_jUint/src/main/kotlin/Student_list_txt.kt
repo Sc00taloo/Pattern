@@ -1,7 +1,8 @@
 package main.src
+import Student_List_Adapter
 import java.io.File
 
-class Student_list_txt : StudentListInterface {
+class Student_list_txt : StudentListInterface  {
     override fun readFromFile(filePath: String): List<Student> {
         val students = mutableListOf<Student>()
         val file = File(filePath)
@@ -24,7 +25,7 @@ class Student_list_txt : StudentListInterface {
 
     override fun writeToFile(filePath: String, students: List<Student>) {
         val file = File(filePath)
-        file.bufferedWriter().use { writer ->
+        file.bufferedWriter(Charsets.UTF_8).use { writer ->
             students.forEach { student ->
                 writer.write(
                     "${student.id};${student.lastName};${student.firstName};${student.middleName ?: ""};" +

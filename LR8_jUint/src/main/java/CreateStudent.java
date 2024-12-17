@@ -75,7 +75,7 @@ public class CreateStudent extends JDialog {
                 );
 
                 // Используем контроллер для добавления студента
-                controller.adddStudent(student);
+                //controller.adddStudent(student);
                 setVisible(false);
             }
         });
