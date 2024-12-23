@@ -19,7 +19,7 @@ open class Data_list<T>(val data: List<T> = mutableListOf(), val wholeEntitiesCo
         throw IllegalArgumentException("Данный метод необходимо реализовать в классе наследнике")
     }
 
-    open fun get_data(): List<List<Any>> {
+    open fun get_data(): List<List<Any?>> {
         throw IllegalArgumentException("Данный метод необходимо реализовать в классе наследнике")
     }
 

@@ -41,7 +41,7 @@ class Student_list_DB public constructor(private val connection: Connection) {
 
     // b. Получить список k по счету n объектов класса Student_short
     fun get_k_n_student_short_list(k: Int, n: Int): Data_list<Student_short> {
-        val sql = "SELECT * FROM student LIMIT ? OFFSET ?"
+        val sql = "SELECT * FROM student ORDER BY id ASC LIMIT ? OFFSET ?"
         val statement = connection.prepareStatement(sql)
         statement.setInt(1, k)
         statement.setInt(2, (n - 1) * k)  // Оffset: (n-1) * k
@@ -86,9 +86,9 @@ class Student_list_DB public constructor(private val connection: Connection) {
         statement.setString(1, student.lastName)
         statement.setString(2, student.firstName)
         statement.setString(3, student.middleName ?: "")
-        statement.setString(4, student.phone)
-        statement.setString(5, student.telegram)
-        statement.setString(6, student.email)
+        statement.setString(4, student.phone?.ifEmpty { null })
+        statement.setString(5, student.telegram?.ifEmpty { null })
+        statement.setString(6, student.email?.ifEmpty { null })
         statement.setString(7, student.git)
         statement.setInt(8, id)
         statement.executeUpdate()
@@ -113,5 +113,28 @@ class Student_list_DB public constructor(private val connection: Connection) {
         } else {
             0
         }
+    }
+
+    fun getAllStudent(): Data_list<Student_short>{
+        val sql = "SELECT * FROM student"
+        val statement = connection.createStatement()
+        val resultSet = statement.executeQuery(sql)
+        val studentShortList = mutableListOf<Student_short>()
+        while (resultSet.next()) {
+            studentShortList.add(
+                Student_short(
+                    id = resultSet.getInt("id"),
+                    lastName = resultSet.getString("lastname"),
+                    firstName = resultSet.getString("firstname"),
+                    middleName = resultSet.getString("middlename"),
+                    phone = resultSet.getString("phone"),
+                    telegram = resultSet.getString("telegram"),
+                    email = resultSet.getString("email"),
+                    git = resultSet.getString("git")
+                )
+            )
+        }
+        val totalStudents = getTotalStudents()
+        return Data_list(studentShortList, totalStudents)
     }
 }

@@ -6,10 +6,25 @@ import java.util.List;
 public class MainWindowController {
 
     private final Student_list_DB database;
+    private Data_list<Student_short> allStudents;
 
     public MainWindowController() {
         this.database = Student_list_DB.Companion.getInstance(); // Получаем экземпляр базы данных
     }
+
+    public Data_list loadAllStudents() {
+        try {
+            // Предполагаем, что database.getAllStudents() возвращает полный список студентов
+            allStudents = database.getAllStudent(); // Убедитесь, что это возвращает Data_list
+            // Теперь используем getData() для итерации
+            return allStudents;
+        } catch (Exception e) {
+            e.printStackTrace();
+            allStudents = null; // Если произошла ошибка, оставляем список пустым
+        }
+        return null;
+    }
+
 
     // Метод для получения студентов с поддержкой пагинации
     public List<Student_short> getStudents(int pageSize, int page) {
@@ -34,22 +49,19 @@ public class MainWindowController {
         return students;
     }
 
+    public Data_list_student_short getTableData(int pageSize, int page) {
+        try {
+            // Получаем список студентов для текущей страницы
+            List<Student_short> students = database.get_k_n_student_short_list(pageSize, page).getList();
+            int totalStudents = database.getTotalStudents();
 
-//    public void addStudent(Student_short student) {
-//        try {
-//            database.addStudent(student); // Метод для добавления студента в базу данных
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    public void updateStudent(Student_short student) {
-//        try {
-//            database.updateStudent(1,student); // Метод для обновления студента в базе данных
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
+            // Возвращаем Data_list_student_short с полученными данными
+            return new Data_list_student_short(students, totalStudents);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Data_list_student_short(new ArrayList<>(), 0);
+        }
+    }
 
     // Метод для удаления студента по его ID
     public void deleteStudent(int studentId) {
@@ -60,12 +72,4 @@ public class MainWindowController {
         }
     }
 
-//    public int getTotalRecords() {
-//        try {
-//            return database.getTotalStudents();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return 0;
-//        }
-//    }
 }

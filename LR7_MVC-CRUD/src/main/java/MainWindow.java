@@ -27,6 +27,8 @@ public class MainWindow {
     private DefaultTableModel tableModel;
     private final MainWindowController controller = new MainWindowController();
     private Student_short selectedStudent;
+    private Data_list_student_short dataList;
+    private Data_list<Student_short> allStudents;
 
     public void createWindow() {
         JFrame frame = new JFrame("Students");
@@ -185,24 +187,40 @@ public class MainWindow {
         gitNo.addActionListener(e -> gitField.setEnabled(false));
         gitAny.addActionListener(e -> gitField.setEnabled(false));
 
-        // Таблица
-        String[] columnNames = {"ID", "Фамилия", "Имя", "Отчество", "Git", "Email", "Телефон", "Telegram"};
+        String[] columnNames = {"№", "Фамилия и инициалы", "Git", "Контакт"};
+
+        // Создание модели таблицы
         tableModel = new DefaultTableModel(columnNames, 0);
         studentTable = new JTable(tableModel);
+
         // Запрет на редактирование таблицы
         studentTable.setDefaultEditor(Object.class, null);
-        // Сортировка по Фамилия
+
+        // Проверка на null, если dataList не инициализировано, то заполняем пустой таблицей
+        if (dataList != null) {
+            List<List<Object>> tableData = dataList.get_data();
+
+            // Пропускаем первую строку (заголовки), добавляем остальные
+            for (int i = 1; i < tableData.size(); i++) {
+                List<Object> row = tableData.get(i);
+                tableModel.addRow(row.toArray());
+            }
+        } else {
+            System.out.println("dataList is null, cannot load table data.");
+        }
+
+        // Добавление функциональности сортировки по "Фамилия и инициалы"
         studentTable.getTableHeader().addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent evt) {
                 int col = studentTable.columnAtPoint(evt.getPoint());
-                // Провверка нажатия по Фамилия
-                if (col == 1) {
+                if (col == 1) { // Колонка "Фамилия и инициалы"
                     sortTableByLastName();
                 }
             }
         });
+        loadTableData();
+
         JScrollPane tableScrollPane = new JScrollPane(studentTable);
-        // Добавление тестовые хардкодинговых данные
         List<Student_short> students = fetchStudentsFromDataSource();
         totalRecords = students.size();
         updateTableData(students, tableModel);
@@ -216,7 +234,7 @@ public class MainWindow {
         prevButton.addActionListener(e -> {
             if (currentPage > 1) {
                 currentPage--;
-                List<Student_short> st = controller.getStudents(PAGE_SIZE, currentPage); // Загружаем данные для текущей страницы
+                List<Student_short> st = controller.getStudents(PAGE_SIZE, currentPage);
                 updateTableData(st, tableModel);
                 pageLabel.setText("Страница: " + currentPage + " из " + getTotalPages());
             }
@@ -224,7 +242,7 @@ public class MainWindow {
         nextButton.addActionListener(e -> {
             if (currentPage < getTotalPages()) {
                 currentPage++;
-                List<Student_short> st = controller.getStudents(PAGE_SIZE, currentPage); // Загружаем данные для следующей страницы
+                List<Student_short> st = controller.getStudents(PAGE_SIZE, currentPage);
                 updateTableData(st, tableModel);
                 pageLabel.setText("Страница: " + currentPage + " из " + getTotalPages());
             }
@@ -251,25 +269,25 @@ public class MainWindow {
         controlPanel.add(deleteButton);
         controlPanel.add(refreshButton);
 
-        studentTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                int[] selectedRows = studentTable.getSelectedRows();
-                if (selectedRows.length == 1) {
-                    // Одна строка выделена
-                    editButton.setEnabled(true);
-                    deleteButton.setEnabled(true);
-                } else if (selectedRows.length > 1) {
-                    // Несколько строк выделены
-                    editButton.setEnabled(false);
-                    deleteButton.setEnabled(true);
-                } else {
-                    // Никакая строка не выделена
-                    editButton.setEnabled(false);
-                    deleteButton.setEnabled(false);
-                }
-            }
-        });
+//        studentTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+//            @Override
+//            public void valueChanged(ListSelectionEvent e) {
+//                int[] selectedRows = studentTable.getSelectedRows();
+//                if (selectedRows.length == 1) {
+//                    // Одна строка выделена
+//                    editButton.setEnabled(true);
+//                    deleteButton.setEnabled(true);
+//                } else if (selectedRows.length > 1) {
+//                    // Несколько строк выделены
+//                    editButton.setEnabled(false);
+//                    deleteButton.setEnabled(true);
+//                } else {
+//                    // Никакая строка не выделена
+//                    editButton.setEnabled(false);
+//                    deleteButton.setEnabled(false);
+//                }
+//            }
+//        });
 
         studentTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -279,6 +297,7 @@ public class MainWindow {
                     // Если выбрана одна строка, активируем кнопку "Обновить"
                     selectedStudent = getSelectedStudentFromRow(selectedRows[0]); // Получаем выбранного студента по строке
                     editButton.setEnabled(true);
+                    deleteButton.setEnabled(true);
 
                     // Обновление метки информации
                     //studentInfoLabel.setText("Фамилия: " + selectedStudent.getLastName() + " Имя: " + selectedStudent.getFirstName());
@@ -330,14 +349,16 @@ public class MainWindow {
         deleteButton.addActionListener(e -> {
             int[] selectedRows = studentTable.getSelectedRows();
             for (int row : selectedRows) {
-                int studentId = (int) tableModel.getValueAt(row, 0);
-                controller.deleteStudent(studentId); // Вызов метода контроллера
+                if(currentPage == 1){
+                    int studentId = (int) tableModel.getValueAt(row, 0);
+                    controller.deleteStudent(studentId); // Вызов метода контроллера
+                }
+                else{
+                    int studentId = (int) tableModel.getValueAt(row, 0);
+                    controller.deleteStudent(studentId+(PAGE_SIZE*(currentPage-1))); // Вызов метода контроллера
+                }
             }
-            List<Student_short> saf = fetchStudentsFromDataSource();
-            totalRecords = saf.size();
-            currentPage = Math.min(currentPage, getTotalPages()); // Обновляем текущую страницу
-            updateTableData(saf, tableModel);
-            refreshTable(); // Обновляем таблицу после удаления
+            refreshTable();
         });
         refreshButton.addActionListener(e -> {
             List<Student_short> af = fetchStudentsFromDataSource();
@@ -359,22 +380,48 @@ public class MainWindow {
         return panel;
     }
 
+    private void loadTableData() {
+        // Получаем данные из контроллера
+        dataList = controller.getTableData(PAGE_SIZE, currentPage);
+    }
+
+    // Метод для поиска студента по id из списка
+    private Student_short getStudentById(int id) {
+        allStudents = controller.loadAllStudents();
+        for (Student_short student : allStudents.getData()) {
+            if (student.getId() == id) {
+                return student;
+            }
+        }
+        return null;
+    }
+
     private Student_short getSelectedStudentFromRow(int rowIndex) {
-        // Извлекаем данные из выбранной строки таблицы
-        int ID = (int) studentTable.getValueAt(rowIndex, 0);
-        String lastName = (String) studentTable.getValueAt(rowIndex, 1); // Фамилия
-        String firstName = (String) studentTable.getValueAt(rowIndex, 2); // Имя
-        String middleName = (String) studentTable.getValueAt(rowIndex, 3); // Отчество
-        String git = (String) studentTable.getValueAt(rowIndex, 4); // Git
-        String email = (String) studentTable.getValueAt(rowIndex, 5); // Email
-        String phone = (String) studentTable.getValueAt(rowIndex, 6); // Телефон
-        String telegram = (String) studentTable.getValueAt(rowIndex, 7); // Telegram
+        // Извлекаем ID из выбранной строки
+        if (currentPage == 1){
+            int id = (int) studentTable.getValueAt(rowIndex, 0); // Извлекаем ID из первой колонки таблицы
 
-        // Создаем новый объект Student_short на основе данных из строки таблицы
-        // Предполагаем, что у вас есть конструктор в классе Student_short, который принимает эти значения
-        Student_short student = new Student_short(ID,lastName, firstName, middleName, phone, telegram, email, git);
+            // Ищем студента по ID
+            Student_short student = getStudentById(id);
 
-        return student;
+            if (student != null) {
+                return student; // Возвращаем полный объект студента
+            } else {
+                return null; // Если студент не найден
+            }
+        }
+        else{
+            int id = (int) studentTable.getValueAt(rowIndex, 0); // Извлекаем ID из первой колонки таблицы
+
+            // Ищем студента по ID
+            Student_short student = getStudentById(id+(PAGE_SIZE*(currentPage-1)));
+
+            if (student != null) {
+                return student; // Возвращаем полный объект студента
+            } else {
+                return null; // Если студент не найден
+            }
+        }
     }
 
     private int getSelectedButtonIndex(ButtonGroup group) {
@@ -448,17 +495,16 @@ public class MainWindow {
     private void updateTableData(List<Student_short> students, DefaultTableModel tableModel) {
         tableModel.setRowCount(0); // Очистка таблицы
 
-        for (Student_short student : students) {
-            tableModel.addRow(new Object[]{
-                    student.getId(),
-                    student.getLastName(),
-                    student.getFirstName(),
-                    student.getMiddleName(),
-                    student.getGit(),
-                    student.getEmail(),
-                    student.getPhone(),
-                    student.getTelegram()
-            });
+        // Получаем данные через get_data() из Data_list_student_short
+        Data_list_student_short dataList = new Data_list_student_short(students, students.size());
+
+        // Получаем таблицу данных
+        List<List<Object>> tableData = dataList.get_data();
+
+        // Пропускаем первую строку (заголовки), добавляем остальные
+        for (int i = 1; i < tableData.size(); i++) {
+            List<Object> row = tableData.get(i); // Получаем строку данных
+            tableModel.addRow(row.toArray()); // Добавляем строку в таблицу
         }
     }
 

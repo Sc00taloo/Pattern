@@ -60,11 +60,34 @@ public class UpdateStudentController {
         return Student.Examination.isValidLastName(dialog.getSurnameField().getText().trim()) &&
                 Student.Examination.isValidFirstName(dialog.getNameField().getText().trim()) &&
                 Student.Examination.isValidMiddleName(dialog.getPatronymicField().getText().trim()) &&
-                Student.Examination.isValidGit(dialog.getGitHubField().getText().trim()) &&
-                Student.Examination.isValidEmail(dialog.getEmailField().getText().trim()) &&
-                Student.Examination.isValidPhone(dialog.getPhoneNumberField().getText().trim()) &&
-                Student.Examination.isValidTelegram(dialog.getTelegramField().getText().trim());
+                Student.Examination.isValidGit(dialog.getGitHubField().getText().trim()) && (
+                test() &&
+                test1() &&
+                test2() && test3());
     }
+
+    private boolean test(){
+        return dialog.getPhoneNumberField().getText().trim().isEmpty() || (!dialog.getPhoneNumberField().getText().trim().isEmpty() && Student.Examination.isValidPhone(dialog.getPhoneNumberField().getText().trim()));
+    }
+
+    private boolean test1(){
+        return dialog.getEmailField().getText().trim().isEmpty() || (!dialog.getEmailField().getText().trim().isEmpty() && Student.Examination.isValidEmail(dialog.getEmailField().getText().trim()));
+    }
+
+    private boolean test2(){
+        return dialog.getTelegramField().getText().trim().isEmpty() || (!dialog.getTelegramField().getText().trim().isEmpty() && Student.Examination.isValidTelegram(dialog.getTelegramField().getText().trim()));
+    }
+
+    private boolean test3(){
+        if (dialog.getPhoneNumberField().getText().trim().isEmpty() && dialog.getEmailField().getText().trim().isEmpty()
+                && dialog.getTelegramField().getText().trim().isEmpty()){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
 
     public void updateUpdateButtonState() {
         boolean allFieldsValid = validateFields();

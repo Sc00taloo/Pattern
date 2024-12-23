@@ -20,20 +20,22 @@ class Data_list_student_short(students: List<Student_short>, wholeEntitiesCount:
     }
 
     // получение полного списка
-    override fun get_data(): List<List<Any>> {
-        val dataList = mutableListOf<List<Any>>()
-        dataList.add(get_names())
-        var index =0
+    override fun get_data(): List<List<Any?>> { // Используем Any? для nullable типов
+        val dataList = mutableListOf<List<Any?>>()
+        dataList.add(get_names())  // Добавляем заголовки
+
+        var index = 0
         for (student in data) {
-            index += 1;
-            val row = listOf(
-                index,
-                student.FIO(),
-                student.git,
-                student.contactMethod()
+            index += 1
+            val row: List<Any?> = listOf(
+                index, // Индекс
+                student.FIO(), // Инициалы, может быть nullable
+                student.git, // Git, может быть nullable
+                student.contactMethod() // Контакт, может быть nullable
             )
-            dataList.add(listOf(row))
+            dataList.add(row)  // Добавляем строку как плоский список
         }
+
         return dataList
     }
 }

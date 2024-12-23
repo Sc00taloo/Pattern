@@ -27,11 +27,12 @@ class Student_short(
         lastName = studentString.split(",")[0],
         firstName = studentString.split(",")[1],
         middleName = studentString.split(",").getOrNull(2).toString(),
-        phone = studentString.split(",").getOrNull(3),
-        telegram = studentString.split(",").getOrNull(4),
-        email = studentString.split(",").getOrNull(5),
+        phone = studentString.split(",").getOrNull(3)?.split(";")?.map { it.trim() }.toString(), // Множество телефонов
+        telegram = studentString.split(",").getOrNull(4)?.split(";")?.map { it.trim() }.toString(), // Множество telegram
+        email = studentString.split(",").getOrNull(5)?.split(";")?.map { it.trim() }.toString(), // Множество email
         git = studentString.split(",").getOrNull(6)
     )
+
     override fun toString(): String {
         return "Student_short(id=$id, ${getInfo()})"
     }

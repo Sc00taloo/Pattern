@@ -26,7 +26,7 @@ class Student_list_controller(private val dbAdapter: Students_List_DB_Adapter) {
         val dataTable = currentDataList?.get_data() ?: listOf()
 
         // Уведомляем View
-        currentDataList?.notify(columnNames, dataTable)
+        //currentDataList?.notify(columnNames, dataTable)
     }
 
     fun get_k_n_student_short_list(n: Int, k: Int): Data_list<Student_short>? {

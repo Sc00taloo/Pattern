@@ -15,7 +15,7 @@ public class CreateStudentController {
     public CreateStudentController(Frame owner) {
         dialog = new CreateStudent(owner, this);
         studentListDB = Student_list_DB.Companion.getInstance();
-        setupFieldListeners();  // Добавляем слушателей для обновления кнопки "Создать"
+        setupFieldListeners();
     }
 
     public void showDialog() {
@@ -49,7 +49,7 @@ public class CreateStudentController {
             dialog.dispose();
         } else {
             JOptionPane.showMessageDialog(dialog,
-                    "Пожалуйста, заполните все поля корректно!",
+                    "Заполните все поля корректно!",
                     "Ошибка ввода",
                     JOptionPane.ERROR_MESSAGE);
         }
@@ -60,7 +60,6 @@ public class CreateStudentController {
     }
 
     private boolean validateFields() {
-        // Используем методы валидации из Student для проверки каждого поля
         return Student.Examination.isValidLastName(dialog.getSurnameField().getText().trim()) &&
                 Student.Examination.isValidFirstName(dialog.getNameField().getText().trim()) &&
                 Student.Examination.isValidMiddleName(dialog.getPatronymicField().getText().trim()) &&
@@ -70,13 +69,12 @@ public class CreateStudentController {
                 Student.Examination.isValidTelegram(dialog.getTelegramField().getText().trim());
     }
 
-    // Обновляем состояние кнопки "Создать" на основе валидации
     public void updateCreateButtonState() {
         boolean allFieldsValid = validateFields();
         dialog.getCreateButton().setEnabled(allFieldsValid);
     }
 
-    // Настройка слушателей для всех полей
+    // Настройка для всех полей
     private void setupFieldListeners() {
         dialog.getSurnameField().getDocument().addDocumentListener(new FieldDocumentListener(this));
         dialog.getNameField().getDocument().addDocumentListener(new FieldDocumentListener(this));
@@ -87,7 +85,6 @@ public class CreateStudentController {
         dialog.getGitHubField().getDocument().addDocumentListener(new FieldDocumentListener(this));
     }
 
-    // Вспомогательный слушатель, который будет проверять поля и обновлять кнопку "Создать"
     private class FieldDocumentListener implements DocumentListener {
         private CreateStudentController controller;
 
