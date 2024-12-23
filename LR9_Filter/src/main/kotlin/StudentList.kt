@@ -6,8 +6,8 @@ class StudentList(private val adapter: Student_List_Adapter) {
         return adapter.getStudentById(id)
     }
 
-    fun get_k_n_student_short_list(n: Int, k: Int): Data_list<Student_short> {
-        return adapter.get_k_n_student_short_list(n, k)
+    fun get_k_n_student_short_list(n: Int, k: Int,gitSubstring: String?, filterType: String): Data_list<Student_short> {
+        return adapter.get_k_n_student_short_list(n, k, gitSubstring, filterType)
     }
 
     fun addStudent(student: Student_short): Int {

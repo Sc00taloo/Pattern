@@ -13,10 +13,10 @@ class Student_list_controller(private val dbAdapter: Students_List_DB_Adapter) {
 
     fun refresh_data(pageSize: Int, pageNumber: Int) {
         // Получение данных из модели
-        currentDataList = Data_list_student_short(
-            studentList.get_k_n_student_short_list(pageSize, pageNumber).data,
-            studentList.getStudentShortCount()
-        )
+//        currentDataList = Data_list_student_short(
+//            studentList.get_k_n_student_short_list(pageSize, pageNumber, gitSubstring: String?, filterType: String).data,
+//            studentList.getStudentShortCount()
+//        )
 
         // Устанавливаем View как наблюдателя
         currentDataList?.setObserver(view)
@@ -29,9 +29,9 @@ class Student_list_controller(private val dbAdapter: Students_List_DB_Adapter) {
         //currentDataList?.notify(columnNames, dataTable)
     }
 
-    fun get_k_n_student_short_list(n: Int, k: Int): Data_list<Student_short>? {
+    fun get_k_n_student_short_list(n: Int, k: Int,gitSubstring: String?, filterType: String): Data_list<Student_short>? {
         return try {
-            dbAdapter.get_k_n_student_short_list(n, k)
+            dbAdapter.get_k_n_student_short_list(n, k, gitSubstring, filterType)
         } catch (e: SQLException) {
             println("Ошибка: Невозможно подключиться к базе данных. ${e.message}")
             println("Произошла ошибка при подключении к базе данных. Попробуйте позже.")

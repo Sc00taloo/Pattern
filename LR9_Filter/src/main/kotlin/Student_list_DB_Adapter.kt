@@ -6,8 +6,8 @@ class Students_List_DB_Adapter(private val dbInstance: Student_list_DB) : Studen
         return dbInstance.getStudentById(id)
     }
 
-    override fun get_k_n_student_short_list(n: Int, k: Int): Data_list<Student_short> {
-        return dbInstance.get_k_n_student_short_list(n, k)
+    override fun get_k_n_student_short_list(n: Int, k: Int, gitSubstring: String?, filterType: String): Data_list<Student_short> {
+        return dbInstance.get_k_n_student_short_list(n, k, gitSubstring, filterType)
     }
 
     override fun addStudent(student: Student_short): Int {

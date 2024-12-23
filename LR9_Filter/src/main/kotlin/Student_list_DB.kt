@@ -40,13 +40,30 @@ class Student_list_DB public constructor(private val connection: Connection) {
     }
 
     // b. Получить список k по счету n объектов класса Student_short
-    fun get_k_n_student_short_list(k: Int, n: Int): Data_list<Student_short> {
-        val sql = "SELECT * FROM student ORDER BY id ASC LIMIT ? OFFSET ?"
+    fun get_k_n_student_short_list(k: Int, n: Int, gitSubstring: String? = null, filterType: String): Data_list<Student_short> {
+        val sql = when (filterType) {
+            "yes" -> if (gitSubstring != null) {
+                "SELECT * FROM student WHERE git IS NOT NULL AND git LIKE ? ORDER BY id ASC LIMIT ? OFFSET ?"
+            } else {
+                "SELECT * FROM student WHERE git IS NOT NULL ORDER BY id ASC LIMIT ? OFFSET ?"
+            }
+            "no" -> "SELECT * FROM student WHERE git IS NULL ORDER BY id ASC LIMIT ? OFFSET ?"
+            else -> "SELECT * FROM student ORDER BY id ASC LIMIT ? OFFSET ?"
+        }
+
         val statement = connection.prepareStatement(sql)
-        statement.setInt(1, k)
-        statement.setInt(2, (n - 1) * k)  // Оffset: (n-1) * k
+        var paramIndex = 1
+
+        if (filterType == "yes" && gitSubstring != null) {
+            statement.setString(paramIndex++, "%$gitSubstring%")
+        }
+
+        statement.setInt(paramIndex++, k)
+        statement.setInt(paramIndex, (n - 1) * k)  // Offset: (n-1) * k
+
         val resultSet = statement.executeQuery()
         val studentShortList = mutableListOf<Student_short>()
+
         while (resultSet.next()) {
             studentShortList.add(
                 Student_short(
@@ -61,6 +78,7 @@ class Student_list_DB public constructor(private val connection: Connection) {
                 )
             )
         }
+
         val totalStudents = getTotalStudents()
         return Data_list(studentShortList, totalStudents)
     }

@@ -30,7 +30,7 @@ public class MainWindowController {
     public List<Student_short> getStudents(int pageSize, int page) {
         try {
             Student_list_DB dbInstance = Student_list_DB.Companion.getInstance();
-            return dbInstance.get_k_n_student_short_list(pageSize, page).getList();
+            return dbInstance.get_k_n_student_short_list(pageSize, page, "", "").getList();
         } catch (Exception e) {
             e.printStackTrace();
             return new ArrayList<>(); // Возвращаем пустой список при ошибке
@@ -41,7 +41,7 @@ public class MainWindowController {
         List<Student_short> students = new ArrayList<>();
         try {
             Student_list_DB dbInstance = Student_list_DB.Companion.getInstance();
-            List<Student_short> fetched = dbInstance.get_k_n_student_short_list(50, 1).getList();
+            List<Student_short> fetched = dbInstance.get_k_n_student_short_list(50, 1, "", "").getList();
             students.addAll(fetched);
         } catch (Exception e) {
             e.printStackTrace();
@@ -52,7 +52,7 @@ public class MainWindowController {
     public Data_list_student_short getTableData(int pageSize, int page) {
         try {
             // Получаем список студентов для текущей страницы
-            List<Student_short> students = database.get_k_n_student_short_list(pageSize, page).getList();
+            List<Student_short> students = database.get_k_n_student_short_list(pageSize, page, "", "").getList();
             int totalStudents = database.getTotalStudents();
 
             // Возвращаем Data_list_student_short с полученными данными
@@ -69,6 +69,17 @@ public class MainWindowController {
             database.deleteStudent(studentId); // Метод для удаления студента из базы данных
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public List<Student_short> getStudentsWithGitFilter(int pageSize, int page, String gitSubstring, String filterType) {
+        try {
+            Student_list_DB dbInstance = Student_list_DB.Companion.getInstance();
+            Data_list<Student_short> dataList = dbInstance.get_k_n_student_short_list(pageSize, page, gitSubstring, filterType);
+            return dataList.getList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>(); // Возвращаем пустой список при ошибке
         }
     }
 

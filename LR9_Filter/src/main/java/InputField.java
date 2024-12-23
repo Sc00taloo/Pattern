@@ -10,7 +10,6 @@ public class InputField extends JPanel {
     public InputFieldController inputFieldController;
     public InputField(Predicate<String> validateFieldFunction,String label,boolean optional){
 
-        //Создаем верстку
         this.setLayout(new GridLayout(2,1));
 
         //Создаем заголовок

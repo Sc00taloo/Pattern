@@ -33,7 +33,6 @@ public class InputFieldController {
             }
 
             public void processInput() {
-                // Äåéñòâèÿ ïðè ïîòåðå ôîêóñà
                 InputFieldController.this.setTextValue();
                 InputFieldController.this.checkInputCorrect();
             }

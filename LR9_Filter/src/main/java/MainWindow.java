@@ -1,5 +1,4 @@
 import main.src.Student_short;
-import main.src.SuperStudent;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -8,14 +7,11 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class MainWindow {
@@ -221,7 +217,16 @@ public class MainWindow {
         loadTableData();
 
         JScrollPane tableScrollPane = new JScrollPane(studentTable);
-        List<Student_short> students = fetchStudentsFromDataSource();
+        AtomicReference<String> gitSubstring = new AtomicReference<>(gitField.getText().trim());
+        AtomicReference<String> filterType = new AtomicReference<>("");
+        if (gitYes.isSelected()) {
+            filterType.set("yes");
+        } else if (gitNo.isSelected()) {
+            filterType.set("no");
+        } else if (gitAny.isSelected()) {
+            filterType.set("any");
+        }
+        List<Student_short> students = fetchStudentsFromDataSource(gitSubstring.get(), filterType.get());
         totalRecords = students.size();
         updateTableData(students, tableModel);
 
@@ -232,6 +237,7 @@ public class MainWindow {
         JLabel pageLabel = new JLabel("Страница: " + currentPage + " из " + getTotalPages());
 
         prevButton.addActionListener(e -> {
+            totalRecords = students.size();
             if (currentPage > 1) {
                 currentPage--;
                 List<Student_short> st = controller.getStudents(PAGE_SIZE, currentPage);
@@ -240,6 +246,7 @@ public class MainWindow {
             }
         });
         nextButton.addActionListener(e -> {
+            totalRecords = students.size();
             if (currentPage < getTotalPages()) {
                 currentPage++;
                 List<Student_short> st = controller.getStudents(PAGE_SIZE, currentPage);
@@ -269,26 +276,6 @@ public class MainWindow {
         controlPanel.add(deleteButton);
         controlPanel.add(refreshButton);
 
-//        studentTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-//            @Override
-//            public void valueChanged(ListSelectionEvent e) {
-//                int[] selectedRows = studentTable.getSelectedRows();
-//                if (selectedRows.length == 1) {
-//                    // Одна строка выделена
-//                    editButton.setEnabled(true);
-//                    deleteButton.setEnabled(true);
-//                } else if (selectedRows.length > 1) {
-//                    // Несколько строк выделены
-//                    editButton.setEnabled(false);
-//                    deleteButton.setEnabled(true);
-//                } else {
-//                    // Никакая строка не выделена
-//                    editButton.setEnabled(false);
-//                    deleteButton.setEnabled(false);
-//                }
-//            }
-//        });
-
         studentTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -298,15 +285,12 @@ public class MainWindow {
                     selectedStudent = getSelectedStudentFromRow(selectedRows[0]); // Получаем выбранного студента по строке
                     editButton.setEnabled(true);
                     deleteButton.setEnabled(true);
-
-                    // Обновление метки информации
-                    //studentInfoLabel.setText("Фамилия: " + selectedStudent.getLastName() + " Имя: " + selectedStudent.getFirstName());
                 } else if (selectedRows.length > 1) {
-                    // Несколько строк выделены
+
                     editButton.setEnabled(false);
                     deleteButton.setEnabled(true);
                 } else {
-                    // Никакая строка не выделена
+
                     editButton.setEnabled(false);
                     deleteButton.setEnabled(false);
                 }
@@ -361,11 +345,32 @@ public class MainWindow {
             refreshTable();
         });
         refreshButton.addActionListener(e -> {
-            List<Student_short> af = fetchStudentsFromDataSource();
-            totalRecords = af.size(); // Обновляем общее количество записей
-            currentPage = 1; // Возвращаемся на первую страницу
-            updateTableData(af, tableModel);
-            //JOptionPane.showMessageDialog(null, "Таблица обновлена!", "Обновление", JOptionPane.INFORMATION_MESSAGE);
+            try {
+                gitSubstring.set(gitField.getText().trim());
+                filterType.set("");
+
+                if (gitYes.isSelected()) {
+                    filterType.set("yes");
+                } else if (gitNo.isSelected()) {
+                    filterType.set("no");
+                } else if (gitAny.isSelected()) {
+                    filterType.set("any");
+                }
+
+                // Получаем отфильтрованных студентов
+                List<Student_short> filteredStudents = controller.getStudentsWithGitFilter(PAGE_SIZE, 1, gitSubstring.get(), filterType.get());
+                totalRecords = filteredStudents.size(); // Обновляем общее количество записей
+                currentPage = 1; // Возвращаемся на первую страницу
+
+                // Обновляем таблицу с новыми данными
+                updateTableData(filteredStudents, tableModel);
+
+                JOptionPane.showMessageDialog(null, "Таблица обновлена!", "Обновление", JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Ошибка при обновлении данных: " + ex.getMessage(),
+                        "Ошибка", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
 
@@ -461,36 +466,36 @@ public class MainWindow {
         return false;
     }
 
-    private List<Student_short> applyFilters(String name, String phone, String telegram, String email, String git,
-                                       ButtonGroup phoneGroup, ButtonGroup telegramGroup, ButtonGroup emailGroup, ButtonGroup gitGroup) {
-        List<Student_short> filteredStudents = fetchStudentsFromDataSource();
-        if (!name.isEmpty()) {
-            filteredStudents = filteredStudents.stream()
-                    .filter(s -> filterByNameAndInitials(s, name))
-                    .collect(Collectors.toList());
-        }
-        if (!phone.isEmpty() && getSelectedButtonIndex(phoneGroup) == 0) {
-            filteredStudents = filteredStudents.stream()
-                    .filter(s -> s.getPhone().contains(phone))
-                    .collect(Collectors.toList());
-        }
-        if (!telegram.isEmpty() && getSelectedButtonIndex(telegramGroup) == 0) {
-            filteredStudents = filteredStudents.stream()
-                    .filter(s -> s.getTelegram().contains(telegram))
-                    .collect(Collectors.toList());
-        }
-        if (!email.isEmpty() && getSelectedButtonIndex(emailGroup) == 0) {
-            filteredStudents = filteredStudents.stream()
-                    .filter(s -> s.getEmail().contains(email))
-                    .collect(Collectors.toList());
-        }
-        if (!git.isEmpty() && getSelectedButtonIndex(gitGroup) == 0) {
-            filteredStudents = filteredStudents.stream()
-                    .filter(s -> s.getGit().contains(git))
-                    .collect(Collectors.toList());
-        }
-        return filteredStudents;
-    }
+//    private List<Student_short> applyFilters(String name, String phone, String telegram, String email, String git,
+//                                       ButtonGroup phoneGroup, ButtonGroup telegramGroup, ButtonGroup emailGroup, ButtonGroup gitGroup) {
+//        List<Student_short> filteredStudents = fetchStudentsFromDataSource();
+//        if (!name.isEmpty()) {
+//            filteredStudents = filteredStudents.stream()
+//                    .filter(s -> filterByNameAndInitials(s, name))
+//                    .collect(Collectors.toList());
+//        }
+//        if (!phone.isEmpty() && getSelectedButtonIndex(phoneGroup) == 0) {
+//            filteredStudents = filteredStudents.stream()
+//                    .filter(s -> s.getPhone().contains(phone))
+//                    .collect(Collectors.toList());
+//        }
+//        if (!telegram.isEmpty() && getSelectedButtonIndex(telegramGroup) == 0) {
+//            filteredStudents = filteredStudents.stream()
+//                    .filter(s -> s.getTelegram().contains(telegram))
+//                    .collect(Collectors.toList());
+//        }
+//        if (!email.isEmpty() && getSelectedButtonIndex(emailGroup) == 0) {
+//            filteredStudents = filteredStudents.stream()
+//                    .filter(s -> s.getEmail().contains(email))
+//                    .collect(Collectors.toList());
+//        }
+//        if (!git.isEmpty() && getSelectedButtonIndex(gitGroup) == 0) {
+//            filteredStudents = filteredStudents.stream()
+//                    .filter(s -> s.getGit().contains(git))
+//                    .collect(Collectors.toList());
+//        }
+//        return filteredStudents;
+//    }
 
     private void updateTableData(List<Student_short> students, DefaultTableModel tableModel) {
         tableModel.setRowCount(0); // Очистка таблицы
@@ -513,12 +518,12 @@ public class MainWindow {
         return (int) Math.ceil((double) totalRecords / PAGE_SIZE);
     }
 
-    private List<Student_short> fetchStudentsFromDataSource() {
+    private List<Student_short> fetchStudentsFromDataSource(String gitSubstring, String filterType) {
         List<Student_short> students = new ArrayList<>();
-        // Kotlin метод вызова get_k_n_student_short_list
         try {
             Student_list_DB dbInstance = Student_list_DB.Companion.getInstance();
-            List<Student_short> fetched = dbInstance.get_k_n_student_short_list(50, currentPage).getList();
+            // Передаем параметры для фильтрации в метод get_k_n_student_short_list
+            List<Student_short> fetched = dbInstance.get_k_n_student_short_list(50, currentPage, gitSubstring, filterType).getList();
             students.addAll(fetched);
         } catch (Exception e) {
             e.printStackTrace();
